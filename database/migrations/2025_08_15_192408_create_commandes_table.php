@@ -10,15 +10,13 @@ return new class extends Migration
     {
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
-            $table->string('numero_commande')->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('montant_total', 10, 2);
             $table->decimal('montant_promotions', 10, 2)->default(0);
             $table->enum('statut', ['en_attente', 'confirmee', 'en_preparation', 'prete', 'en_livraison', 'livree', 'annulee'])->default('en_attente');
             $table->enum('mode_paiement', ['en_ligne', 'a_la_livraison']);
-            $table->enum('statut_paiement', ['en_attente', 'paye', 'echec'])->default('en_attente');
+            $table->enum('statut_paiement', ['en_attente', 'paye', 'non_paye'])->default('en_attente');
             $table->text('adresse_livraison');
-            $table->text('notes')->nullable();
             $table->timestamp('date_souhaitee')->nullable();
             $table->timestamps();
         });

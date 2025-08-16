@@ -20,8 +20,6 @@ return new class extends Migration
             $table->string('telephone')->nullable()->after('email');
             $table->text('adresse')->nullable()->after('telephone');
             $table->string('ville')->nullable()->after('adresse');
-            $table->string('code_postal')->nullable()->after('ville');
-            $table->boolean('actif')->default(true)->after('password');
         });
     }
 
@@ -37,8 +35,6 @@ return new class extends Migration
                 'telephone',
                 'adresse',
                 'ville',
-                'code_postal',
-                'actif'
             ]);
 
             // Remettre nom en name

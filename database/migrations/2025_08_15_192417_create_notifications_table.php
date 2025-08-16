@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('titre');
             $table->text('message');
-            $table->enum('type', ['commande', 'livraison', 'promotion', 'system']);
+            $table->enum('type', ['commande', 'livraison', 'promotion', 'systeme']);
             $table->boolean('lu')->default(false);
             $table->json('data')->nullable();
             $table->timestamps();

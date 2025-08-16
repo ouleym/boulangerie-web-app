@@ -14,9 +14,6 @@ return new class extends Migration
             $table->foreignId('commande_id')->constrained('commandes')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('montant_ht', 10, 2);
-            $table->decimal('montant_tva', 10, 2);
-            $table->decimal('montant_ttc', 10, 2);
-            $table->string('fichier_pdf')->nullable();
             $table->timestamp('date_envoi_email')->nullable();
             $table->timestamps();
         });

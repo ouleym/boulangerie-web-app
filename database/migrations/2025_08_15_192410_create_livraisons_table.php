@@ -11,11 +11,8 @@ return new class extends Migration
         Schema::create('livraisons', function (Blueprint $table) {
             $table->id();
             $table->foreignId('commande_id')->constrained('commandes')->onDelete('cascade');
-            $table->foreignId('livreur_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('statut', ['assignee', 'en_route', 'livree', 'echec'])->default('assignee');
+            $table->enum('statut', ['confirmee', 'en_route', 'livree', 'echec'])->default('confirmee');
             $table->timestamp('heure_depart')->nullable();
-            $table->timestamp('heure_livraison')->nullable();
-            $table->text('commentaires')->nullable();
             $table->timestamps();
         });
     }
