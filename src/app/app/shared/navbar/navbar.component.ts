@@ -17,7 +17,7 @@ export class NavbarComponent implements OnInit {
 
   isAuthenticated$: Observable<boolean> = this.authService.isAuthenticated$;
   currentUser$ = this.authService.currentUser$;
-  isAdmin$ = this.authService.isAdmin$;
+  isAdmin$ = this.authService['isAdmin$'];
   
   isMenuOpen = false;
   isDropdownOpen = false;

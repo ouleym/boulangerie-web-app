@@ -9,6 +9,7 @@ import { NotificationService } from './notification.service';
   providedIn: 'root'
 })
 export class AuthService {
+  [x: string]: any;
   private readonly API_URL = 'http://localhost:8000/api';
   private readonly SANCTUM_URL = 'http://localhost:8000/sanctum';
   
