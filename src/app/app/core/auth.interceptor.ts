@@ -1,5 +1,10 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  return next(req);
+  // Clone la requête et ajoute withCredentials
+  const authReq = req.clone({
+    withCredentials: true
+  });
+
+  return next(authReq);
 };

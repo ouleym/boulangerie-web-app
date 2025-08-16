@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.loginForm.valid && !this.isLoading) {
       this.isLoading = true;
-      
+      this.router.navigate(['/produits']);
       const credentials: LoginCredentials = {
         email: this.loginForm.get('email')?.value,
         password: this.loginForm.get('password')?.value,

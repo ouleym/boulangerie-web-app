@@ -9,20 +9,26 @@ import { errorInterceptor } from './app/core/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // Configuration de base Angular
+    // Angular core
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    
-    // Configuration HTTP avec interceptors pour Sanctum
+
+    // HTTP client avec cookies + interceptors
     provideHttpClient(
-      withFetch(), // Utilise fetch API au lieu de XMLHttpRequest
-      withInterceptors([authInterceptor, errorInterceptor]) 
+      withFetch(),
+      withInterceptors([authInterceptor, errorInterceptor])
     ),
-    
-    // Animations pour Angular Material
+
+    // Force Angular à envoyer les cookies cross-domain
+    {
+      provide: 'withCredentials',
+      useValue: true
+    },
+
+    // Animations Material
     provideAnimationsAsync(),
-    
-    // Configuration Toast notifications
+
+    // Toastr config
     provideToastr({
       timeOut: 3000,
       positionClass: 'toast-top-right',

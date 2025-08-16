@@ -29,7 +29,7 @@ import { CategoriesDetailComponent } from './app/categories/detail/detail.compon
 
 export const routes: Routes = [
   // Routes publiques
-  { path: '', redirectTo: '/produits', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, title: 'Connexion' },
   { path: 'register', component: RegisterComponent, title: 'Inscription' },
 
