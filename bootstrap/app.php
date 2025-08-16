@@ -15,8 +15,8 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',   // routes web classiques
-        api: __DIR__.'/../routes/api.php',   // routes API
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -27,15 +27,15 @@ return Application::configure(basePath: dirname(__DIR__))
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
-            EnsureFrontendRequestsAreStateful::class, // clé pour Sanctum SPA
         ]);
 
         // Middleware global pour les routes "api"
         $middleware->api([
+            EnsureFrontendRequestsAreStateful::class, // Sanctum pour API
             SubstituteBindings::class,
         ]);
 
-        // Middleware par alias (réutilisables dans tes routes)
+        // Middleware par alias
         $middleware->alias([
             'auth' => Authenticate::class,
             'auth.sanctum' => EnsureFrontendRequestsAreStateful::class,
