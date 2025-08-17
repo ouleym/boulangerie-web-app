@@ -7,23 +7,22 @@ export const adminGuard: CanActivateFn = (_route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  return AuthService.currentUser$.pipe(
+  return authService.currentUser$.pipe(
     take(1),
     map(user => {
-      // Vérifier d'abord si l'utilisateur est connecté
-      if (!user || !authService.isAuthenticated) {
-        router.navigate(['/login'], { 
-          queryParams: { returnUrl: state.url } 
-        });
-        return false;
-      }
-
-      // Vérifier si l'utilisateur a les droits d'administration
-      if (authService.isAdmin()) {
+      if (user && authService.isAdmin()) {
         return true;
       } else {
-        // Rediriger vers le dashboard client si pas admin
-        router.navigate(['/dashboard/client']);
+        // Rediriger selon le statut d'authentification
+        if (user) {
+          // Utilisateur connecté mais pas admin
+          router.navigate(['/dashboard']);
+        } else {
+          // Utilisateur non connecté
+          router.navigate(['/login'], {
+            queryParams: { returnUrl: state.url }
+          });
+        }
         return false;
       }
     })

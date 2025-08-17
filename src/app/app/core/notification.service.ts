@@ -4,15 +4,34 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class NotificationService {
-  showSuccess(arg0: string, arg1: string) {
-    throw new Error('Method not implemented.');
-  }
-  showError(arg0: any, arg1: string) {
-    throw new Error('Method not implemented.');
-  }
-  showInfo(arg0: string, arg1: string) {
-    throw new Error('Method not implemented.');
-  }
 
   constructor() { }
+
+  showSuccess(message: string, title: string = 'Succès'): void {
+    console.log(`✅ ${title}: ${message}`);
+    // Vous pouvez remplacer par une vraie notification (toast, snackbar, etc.)
+    // Exemple avec alert temporaire :
+    // alert(`${title}: ${message}`);
+  }
+
+  showError(message: string, title: string = 'Erreur'): void {
+    console.error(`❌ ${title}: ${message}`);
+    // Vous pouvez remplacer par une vraie notification
+    // Exemple avec alert temporaire :
+    // alert(`${title}: ${message}`);
+  }
+
+  showInfo(message: string, title: string = 'Info'): void {
+    console.info(`ℹ️ ${title}: ${message}`);
+    // Vous pouvez remplacer par une vraie notification
+    // Exemple avec alert temporaire :
+    // alert(`${title}: ${message}`);
+  }
+
+  showWarning(message: string, title: string = 'Attention'): void {
+    console.warn(`⚠️ ${title}: ${message}`);
+    // Vous pouvez remplacer par une vraie notification
+    // Exemple avec alert temporaire :
+    // alert(`${title}: ${message}`);
+  }
 }

@@ -1,4 +1,4 @@
-<nav class="navbar-container">
+<nav class="navbar-container" *ngIf="isAuthenticated$ | async">
   <div class="navbar-content">
     <!-- Logo & Brand -->
     <div class="navbar-brand">
@@ -22,15 +22,8 @@
         </a>
       </div>
 
-      <!-- Menu Authentifié -->
       <div class="menu-section" *ngIf="isAuthenticated$ | async">
-        <a routerLink="/dashboard/client" 
-           routerLinkActive="active" 
-           class="nav-link">
-          <i class="fas fa-tachometer-alt"></i>
-          <span>Mon Espace</span>
-        </a>
-        
+       
         <a routerLink="/mes-commandes" 
            routerLinkActive="active" 
            class="nav-link">
@@ -45,24 +38,12 @@
           <span>Panier</span>
         </a>
         
-        <a routerLink="/support" 
-           routerLinkActive="active" 
-           class="nav-link">
-          <i class="fas fa-headset"></i>
-          <span>Support</span>
-        </a>
+        
       </div>
 
       <!-- Menu Admin -->
-      <div class="menu-section admin-section" *ngIf="isAdmin$ | async">
+      <div class="menu-section admin-section">
         <div class="dropdown-container">
-          <button class="nav-link dropdown-toggle" 
-                  (click)="toggleDropdown()" 
-                  [class.active]="isDropdownOpen">
-            <i class="fas fa-cogs"></i>
-            <span>Administration</span>
-            <i class="fas fa-chevron-down dropdown-icon" [class.rotated]="isDropdownOpen"></i>
-          </button>
           
           <div class="dropdown-menu" [class.show]="isDropdownOpen">
             <a routerLink="/admin/users" 
@@ -80,60 +61,7 @@
               <i class="fas fa-tags"></i>
               <span>Catégories</span>
             </a>
-            
-            <a routerLink="/admin/produits" 
-               routerLinkActive="active" 
-               class="dropdown-item"
-               (click)="closeMenu()">
-              <i class="fas fa-bread-slice"></i>
-              <span>Produits</span>
-            </a>
-            
-            <a routerLink="/admin/promotions" 
-               routerLinkActive="active" 
-               class="dropdown-item"
-               (click)="closeMenu()">
-              <i class="fas fa-percent"></i>
-              <span>Promotions</span>
-            </a>
-            
-            <a routerLink="/admin/commandes" 
-               routerLinkActive="active" 
-               class="dropdown-item"
-               (click)="closeMenu()">
-              <i class="fas fa-clipboard-list"></i>
-              <span>Commandes</span>
-            </a>
-            
-            <a routerLink="/admin/support" 
-               routerLinkActive="active" 
-               class="dropdown-item"
-               (click)="closeMenu()">
-              <i class="fas fa-comments"></i>
-              <span>Support Admin</span>
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
-
-    <!-- Actions Utilisateur -->
-    <div class="navbar-actions">
-      <!-- Utilisateur non connecté -->
-      <div class="auth-buttons" *ngIf="!(isAuthenticated$ | async)">
-        <a routerLink="/login" 
-           routerLinkActive="active" 
-           class="btn btn-outline">
-          <i class="fas fa-sign-in-alt"></i>
-          <span>Connexion</span>
-        </a>
-        <a routerLink="/register" 
-           routerLinkActive="active" 
-           class="btn btn-primary">
-          <i class="fas fa-user-plus"></i>
-          <span>Inscription</span>
-        </a>
-      </div>
 
       <!-- Utilisateur connecté -->
       <div class="user-menu" *ngIf="isAuthenticated$ | async">
@@ -151,14 +79,6 @@
           </button>
           
           <div class="dropdown-menu user-dropdown" [class.show]="isDropdownOpen">
-            <a routerLink="/profile" 
-               routerLinkActive="active" 
-               class="dropdown-item"
-               (click)="closeMenu()">
-              <i class="fas fa-user-cog"></i>
-              <span>Mon Profil</span>
-            </a>
-            
             <div class="dropdown-divider"></div>
             
             <button class="dropdown-item logout-btn" (click)="logout()">
@@ -178,10 +98,15 @@
         <span></span>
       </button>
     </div>
-  </div>
+  
 
   <!-- Mobile Menu Overlay -->
   <div class="mobile-overlay" 
        [class.active]="isMenuOpen" 
-       (click)="closeMenu()"></div>
+       (click)="closeMenu()">
+  </div>
+       </div>
+    </div>
+        </div>
+
 </nav>

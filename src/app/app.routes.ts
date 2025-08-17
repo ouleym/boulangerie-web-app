@@ -36,19 +36,15 @@ export const routes: Routes = [
 
   // Routes protégées - Authentification requise
   {
-    path: 'dashboard',
+    path: 'produits',
     canActivate: [authGuard],
-    children: [
-      { path: '', redirectTo: 'client', pathMatch: 'full' },
-      { path: 'client', component: ClientComponent, title: 'Mon Espace Client' },
-      { path: 'employe', component: EmployeComponent, title: 'Espace Employé' },
-      { 
-        path: 'admin', 
-        component: AdminComponent, 
-        canActivate: [adminGuard],
-        title: 'Administration' 
-      }
-    ]
+             children: [
+          { path: '', component: ProduitsListComponent, title: 'Gestion Produits' },
+          { path: 'create', component: ProduitsFormComponent, title: 'Créer Produit' },
+          { path: ':id/edit', component: ProduitsFormComponent, title: 'Modifier Produit' },
+          { path: ':id', component: ProduitsDetailComponent, title: 'Détails Produit' }
+        ]
+      
   },
 
   {
@@ -120,15 +116,7 @@ export const routes: Routes = [
       },
 
       // Gestion des produits (admin)
-      {
-        path: 'produits',
-        children: [
-          { path: '', component: ProduitsListComponent, title: 'Gestion Produits' },
-          { path: 'create', component: ProduitsFormComponent, title: 'Créer Produit' },
-          { path: ':id/edit', component: ProduitsFormComponent, title: 'Modifier Produit' },
-          { path: ':id', component: ProduitsDetailComponent, title: 'Détails Produit' }
-        ]
-      },
+     
 
       // Gestion des promotions
       {

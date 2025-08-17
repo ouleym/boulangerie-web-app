@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   BehaviorSubject,
   Observable,
@@ -7,7 +7,6 @@ import {
   catchError,
   throwError,
   of,
-  switchMap,
   map,
 } from 'rxjs';
 import { Router } from '@angular/router';
@@ -24,14 +23,12 @@ import { NotificationService } from './notification.service';
 })
 export class AuthService {
   private readonly API_URL = 'http://localhost:8000/api';
-  private readonly SANCTUM_URL = 'http://localhost:8000/sanctum';
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-  static currentUser$: any;
 
   constructor(
     private http: HttpClient,
@@ -42,25 +39,22 @@ export class AuthService {
   }
 
   /**
-   * Récupération du cookie CSRF requis par Sanctum
-   */
-  private getCsrfToken(): Observable<void> {
-    return this.http.get<void>(`${this.SANCTUM_URL}/csrf-cookie`, {
-      withCredentials: true,
-    });
-  }
-
-  /**
-   * Connexion avec Sanctum
+   * Connexion simplifiée sans CSRF
    */
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.getCsrfToken().pipe(
-      switchMap(() =>
-        this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials, {
-          withCredentials: true,
-        })
-      ),
+    console.log('🚀 Login sans CSRF...');
+    
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    });
+
+    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials, {
+      headers,
+      withCredentials: true,
+    }).pipe(
       tap((response) => {
+        console.log('✅ Login réussi:', response);
         if (response.user) {
           this.setCurrentUser(response.user);
           this.notificationService.showSuccess(
@@ -70,10 +64,19 @@ export class AuthService {
         }
       }),
       catchError((error) => {
-        this.notificationService.showError(
-          error.error?.message || 'Erreur de connexion',
-          'Erreur'
-        );
+        console.error('❌ Erreur login:', error);
+        
+        let errorMessage = 'Erreur de connexion';
+        
+        if (error.status === 422) {
+          errorMessage = 'Identifiants invalides';
+        } else if (error.status === 0) {
+          errorMessage = 'Impossible de contacter le serveur';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+
+        this.notificationService.showError(errorMessage, 'Erreur de connexion');
         return throwError(() => error);
       })
     );
@@ -83,12 +86,15 @@ export class AuthService {
    * Inscription
    */
   register(userData: RegisterData): Observable<AuthResponse> {
-    return this.getCsrfToken().pipe(
-      switchMap(() =>
-        this.http.post<AuthResponse>(`${this.API_URL}/register`, userData, {
-          withCredentials: true,
-        })
-      ),
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    });
+
+    return this.http.post<AuthResponse>(`${this.API_URL}/register`, userData, {
+      headers,
+      withCredentials: true,
+    }).pipe(
       tap((response) => {
         if (response.user) {
           this.setCurrentUser(response.user);
@@ -112,8 +118,15 @@ export class AuthService {
    * Déconnexion
    */
   logout(): Observable<void> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+    });
+
     return this.http
-      .post<void>(`${this.API_URL}/logout`, {}, { withCredentials: true })
+      .post<void>(`${this.API_URL}/logout`, {}, { 
+        headers,
+        withCredentials: true 
+      })
       .pipe(
         tap(() => {
           this.clearCurrentUser();
@@ -121,7 +134,6 @@ export class AuthService {
           this.notificationService.showInfo('Vous êtes déconnecté', 'Au revoir !');
         }),
         catchError(() => {
-          // Même si l'API échoue, on déconnecte localement
           this.clearCurrentUser();
           this.router.navigate(['/login']);
           return of();
@@ -134,7 +146,12 @@ export class AuthService {
    */
   getCurrentUser(): Observable<User | null> {
     return this.http
-      .get<User>(`${this.API_URL}/user`, { withCredentials: true })
+      .get<User>(`${this.API_URL}/user`, { 
+        withCredentials: true,
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+        })
+      })
       .pipe(
         tap((user) => {
           if (user) this.setCurrentUser(user);
@@ -148,7 +165,13 @@ export class AuthService {
    */
   updateProfile(userData: Partial<User>): Observable<User> {
     return this.http
-      .put<User>(`${this.API_URL}/profile`, userData, { withCredentials: true })
+      .put<User>(`${this.API_URL}/profile`, userData, { 
+        withCredentials: true,
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        })
+      })
       .pipe(
         tap((user) => {
           this.setCurrentUser(user);
@@ -173,7 +196,13 @@ export class AuthService {
     password_confirmation: string;
   }): Observable<void> {
     return this.http
-      .put<void>(`${this.API_URL}/password`, passwords, { withCredentials: true })
+      .put<void>(`${this.API_URL}/password`, passwords, { 
+        withCredentials: true,
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        })
+      })
       .pipe(
         tap(() => {
           this.notificationService.showSuccess(
@@ -191,7 +220,7 @@ export class AuthService {
       );
   }
 
-  // === Gestion utilisateur local ===
+  // === Méthodes utilitaires ===
   get currentUser(): User | null {
     return this.currentUserSubject.value;
   }
@@ -238,9 +267,14 @@ export class AuthService {
   private restoreUserFromStorage(): void {
     const userJson = localStorage.getItem('currentUser');
     if (userJson) {
-      const user: User = JSON.parse(userJson);
-      this.currentUserSubject.next(user);
-      this.isAuthenticatedSubject.next(true);
+      try {
+        const user: User = JSON.parse(userJson);
+        this.currentUserSubject.next(user);
+        this.isAuthenticatedSubject.next(true);
+      } catch (error) {
+        console.error('Erreur parsing user from storage:', error);
+        this.clearCurrentUser();
+      }
     }
   }
 }

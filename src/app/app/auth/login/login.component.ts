@@ -6,7 +6,6 @@ import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 import { LoginCredentials } from '../../models/user.model';
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -60,7 +59,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.loginForm.valid && !this.isLoading) {
       this.isLoading = true;
-      this.router.navigate(['/produits']);
+      
       const credentials: LoginCredentials = {
         email: this.loginForm.get('email')?.value,
         password: this.loginForm.get('password')?.value,
@@ -70,13 +69,19 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.authService.login(credentials)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          next: (_response) => {
+          next: (response) => {
+            console.log('Login successful:', response);
             this.isLoading = false;
             this.redirectAfterLogin();
           },
-          error: (_error) => {
+          error: (error) => {
+            console.error('Login error:', error);
             this.isLoading = false;
-            // L'erreur est gérée par le service via NotificationService
+            
+            // Si erreur 419, on peut essayer de relancer une fois
+            if (error.status === 419) {
+              console.log('CSRF token expired, could retry...');
+            }
           }
         });
     } else {
