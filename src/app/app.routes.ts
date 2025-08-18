@@ -29,22 +29,78 @@ import { CategoriesDetailComponent } from './app/categories/detail/detail.compon
 
 export const routes: Routes = [
   // Routes publiques
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent, title: 'Connexion' },
-  { path: 'register', component: RegisterComponent, title: 'Inscription' },
+  { 
+    path: '', 
+    redirectTo: '/login', 
+    pathMatch: 'full' 
+  },
+  { 
+    path: 'login', 
+    component: LoginComponent, 
+    title: 'Connexion - Boulangerie'
+  },
+  { 
+    path: 'register', 
+    component: RegisterComponent, 
+    title: 'Inscription - Boulangerie'
+  },
 
+  // Routes dashboard avec redirection intelligente
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    children: [
+      { 
+        path: '', 
+        redirectTo: '/dashboard/client', 
+        pathMatch: 'full' 
+      },
+      { 
+        path: 'client', 
+        component: ClientComponent, 
+        title: 'Tableau de bord Client'
+      },
+      { 
+        path: 'employe', 
+        component: EmployeComponent, 
+        title: 'Tableau de bord Employé',
+        canActivate: [authGuard] // Ajouter un guard spécifique si nécessaire
+      },
+      { 
+        path: 'admin', 
+        component: AdminComponent, 
+        title: 'Tableau de bord Admin',
+        canActivate: [adminGuard]
+      }
+    ]
+  },
 
   // Routes protégées - Authentification requise
   {
     path: 'produits',
     canActivate: [authGuard],
-             children: [
-          { path: '', component: ProduitsListComponent, title: 'Gestion Produits' },
-          { path: 'create', component: ProduitsFormComponent, title: 'Créer Produit' },
-          { path: ':id/edit', component: ProduitsFormComponent, title: 'Modifier Produit' },
-          { path: ':id', component: ProduitsDetailComponent, title: 'Détails Produit' }
-        ]
-      
+    children: [
+      { 
+        path: '', 
+        component: ProduitsListComponent, 
+        title: 'Gestion Produits' 
+      },
+      { 
+        path: 'create', 
+        component: ProduitsFormComponent, 
+        title: 'Créer Produit' 
+      },
+      { 
+        path: ':id/edit', 
+        component: ProduitsFormComponent, 
+        title: 'Modifier Produit' 
+      },
+      { 
+        path: ':id', 
+        component: ProduitsDetailComponent, 
+        title: 'Détails Produit' 
+      }
+    ]
   },
 
   {
@@ -58,9 +114,21 @@ export const routes: Routes = [
     path: 'mes-commandes',
     canActivate: [authGuard],
     children: [
-      { path: '', component: CommandesListComponent, title: 'Mes Commandes' },
-      { path: ':id', component: CommandesDetailComponent, title: 'Détail Commande' },
-      { path: ':id/status', component: CommandesStatusComponent, title: 'Suivi Commande' }
+      { 
+        path: '', 
+        component: CommandesListComponent, 
+        title: 'Mes Commandes' 
+      },
+      { 
+        path: ':id', 
+        component: CommandesDetailComponent, 
+        title: 'Détail Commande' 
+      },
+      { 
+        path: ':id/status', 
+        component: CommandesStatusComponent, 
+        title: 'Suivi Commande' 
+      }
     ]
   },
 
@@ -83,9 +151,21 @@ export const routes: Routes = [
     path: 'support',
     canActivate: [authGuard],
     children: [
-      { path: '', component: ConversationsComponent, title: 'Support Client' },
-      { path: 'chat', component: ChatComponent, title: 'Chat' },
-      { path: 'conversation/:id', component: MessagesComponent, title: 'Conversation' }
+      { 
+        path: '', 
+        component: ConversationsComponent, 
+        title: 'Support Client' 
+      },
+      { 
+        path: 'chat', 
+        component: ChatComponent, 
+        title: 'Chat Support' 
+      },
+      { 
+        path: 'conversation/:id', 
+        component: MessagesComponent, 
+        title: 'Conversation Support' 
+      }
     ]
   },
 
@@ -93,14 +173,37 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [authGuard, adminGuard],
+    title: 'Administration',
     children: [
+      {
+        path: '',
+        redirectTo: '/admin/dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        component: AdminComponent,
+        title: 'Dashboard Admin'
+      },
       // Gestion des utilisateurs
       {
         path: 'users',
         children: [
-          { path: '', component: UsersListComponent, title: 'Gestion Utilisateurs' },
-          { path: 'create', component: UsersFormComponent, title: 'Créer Utilisateur' },
-          { path: ':id/edit', component: UsersFormComponent, title: 'Modifier Utilisateur' }
+          { 
+            path: '', 
+            component: UsersListComponent, 
+            title: 'Gestion Utilisateurs' 
+          },
+          { 
+            path: 'create', 
+            component: UsersFormComponent, 
+            title: 'Créer Utilisateur' 
+          },
+          { 
+            path: ':id/edit', 
+            component: UsersFormComponent, 
+            title: 'Modifier Utilisateur' 
+          }
         ]
       },
 
@@ -108,24 +211,80 @@ export const routes: Routes = [
       {
         path: 'categories',
         children: [
-          { path: '', component: CategoriesListComponent, title: 'Gestion Catégories' },
-          { path: 'create', component: CategoriesFormComponent, title: 'Créer Catégorie' },
-          { path: ':id', component: CategoriesDetailComponent, title: 'Détail Catégorie' },
-          { path: ':id/edit', component: CategoriesFormComponent, title: 'Modifier Catégorie' }
+          { 
+            path: '', 
+            component: CategoriesListComponent, 
+            title: 'Gestion Catégories' 
+          },
+          { 
+            path: 'create', 
+            component: CategoriesFormComponent, 
+            title: 'Créer Catégorie' 
+          },
+          { 
+            path: ':id', 
+            component: CategoriesDetailComponent, 
+            title: 'Détail Catégorie' 
+          },
+          { 
+            path: ':id/edit', 
+            component: CategoriesFormComponent, 
+            title: 'Modifier Catégorie' 
+          }
         ]
       },
 
       // Gestion des produits (admin)
-     
+      {
+        path: 'produits',
+        children: [
+          { 
+            path: '', 
+            component: ProduitsListComponent, 
+            title: 'Admin - Tous les Produits' 
+          },
+          { 
+            path: 'create', 
+            component: ProduitsFormComponent, 
+            title: 'Admin - Créer Produit' 
+          },
+          { 
+            path: ':id', 
+            component: ProduitsDetailComponent, 
+            title: 'Admin - Détail Produit' 
+          },
+          { 
+            path: ':id/edit', 
+            component: ProduitsFormComponent, 
+            title: 'Admin - Modifier Produit' 
+          }
+        ]
+      },
 
       // Gestion des promotions
       {
         path: 'promotions',
         children: [
-          { path: '', component: PromotionsListComponent, title: 'Gestion Promotions' },
-          { path: 'create', component: PromotionsFormComponent, title: 'Créer Promotion' },
-          { path: ':id', component: PromotionsDetailComponent, title: 'Détail Promotion' },
-          { path: ':id/edit', component: PromotionsFormComponent, title: 'Modifier Promotion' }
+          { 
+            path: '', 
+            component: PromotionsListComponent, 
+            title: 'Gestion Promotions' 
+          },
+          { 
+            path: 'create', 
+            component: PromotionsFormComponent, 
+            title: 'Créer Promotion' 
+          },
+          { 
+            path: ':id', 
+            component: PromotionsDetailComponent, 
+            title: 'Détail Promotion' 
+          },
+          { 
+            path: ':id/edit', 
+            component: PromotionsFormComponent, 
+            title: 'Modifier Promotion' 
+          }
         ]
       },
 
@@ -133,8 +292,16 @@ export const routes: Routes = [
       {
         path: 'commandes',
         children: [
-          { path: '', component: CommandesListComponent, title: 'Toutes les Commandes' },
-          { path: ':id', component: CommandesDetailComponent, title: 'Détail Commande Admin' }
+          { 
+            path: '', 
+            component: CommandesListComponent, 
+            title: 'Toutes les Commandes' 
+          },
+          { 
+            path: ':id', 
+            component: CommandesDetailComponent, 
+            title: 'Détail Commande Admin' 
+          }
         ]
       },
 
@@ -142,13 +309,24 @@ export const routes: Routes = [
       {
         path: 'support',
         children: [
-          { path: '', component: ConversationsComponent, title: 'Gestion Support' },
-          { path: 'conversation/:id', component: MessagesComponent, title: 'Conversation Admin' }
+          { 
+            path: '', 
+            component: ConversationsComponent, 
+            title: 'Gestion Support' 
+          },
+          { 
+            path: 'conversation/:id', 
+            component: MessagesComponent, 
+            title: 'Conversation Admin' 
+          }
         ]
       }
     ]
   },
 
   // Route 404
-  { path: '**', redirectTo: '/login' }
+  { 
+    path: '**', 
+    redirectTo: '/login' 
+  }
 ];
