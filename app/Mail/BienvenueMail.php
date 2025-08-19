@@ -13,6 +13,7 @@ class BienvenueMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+<<<<<<< HEAD
     /**
      * Create a new message instance.
      */
@@ -46,6 +47,29 @@ class BienvenueMail extends Mailable
      *
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
+=======
+    public $userName;
+
+    public function __construct($userName)
+    {
+        $this->userName = $userName;
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Bienvenue chez notre Boulangerie !',
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.bienvenue',
+        );
+    }
+
+>>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
     public function attachments(): array
     {
         return [];

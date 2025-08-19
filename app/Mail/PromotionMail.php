@@ -13,6 +13,7 @@ class PromotionMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+<<<<<<< HEAD
     /**
      * Create a new message instance.
      */
@@ -46,6 +47,29 @@ class PromotionMail extends Mailable
      *
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
+=======
+    public $promotion;
+
+    public function __construct($promotion)
+    {
+        $this->promotion = $promotion;
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Nouvelle promotion à découvrir !',
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.promotion',
+        );
+    }
+
+>>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
     public function attachments(): array
     {
         return [];

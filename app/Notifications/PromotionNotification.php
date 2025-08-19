@@ -52,3 +52,4 @@ class PromotionNotification extends Notification
         ];
     }
 }
+

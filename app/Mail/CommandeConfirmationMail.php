@@ -13,6 +13,7 @@ class CommandeConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+<<<<<<< HEAD
     /**
      * Create a new message instance.
      */
@@ -46,6 +47,29 @@ class CommandeConfirmationMail extends Mailable
      *
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
+=======
+    public $order;
+
+    public function __construct($order)
+    {
+        $this->order = $order;
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Confirmation de votre commande',
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.commande_confirmation',
+        );
+    }
+
+>>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
     public function attachments(): array
     {
         return [];
