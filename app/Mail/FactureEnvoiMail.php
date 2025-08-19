@@ -13,6 +13,7 @@ class FactureEnvoiMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+<<<<<<< HEAD
     /**
      * Create a new message instance.
      */
@@ -49,5 +50,33 @@ class FactureEnvoiMail extends Mailable
     public function attachments(): array
     {
         return [];
+=======
+    public $invoicePath;
+
+    public function __construct($invoicePath)
+    {
+        $this->invoicePath = $invoicePath;
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Votre facture est disponible',
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.facture_envoi',
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [
+            $this->invoicePath ? $this->attach($this->invoicePath) : null,
+        ];
+>>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
     }
 }

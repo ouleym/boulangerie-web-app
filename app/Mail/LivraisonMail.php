@@ -13,6 +13,7 @@ class LivraisonMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+<<<<<<< HEAD
     /**
      * Create a new message instance.
      */
@@ -34,6 +35,22 @@ class LivraisonMail extends Mailable
     /**
      * Get the message content definition.
      */
+=======
+    public $order;
+
+    public function __construct($order)
+    {
+        $this->order = $order;
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Mise à jour de votre livraison',
+        );
+    }
+
+>>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
     public function content(): Content
     {
         return new Content(
@@ -41,11 +58,14 @@ class LivraisonMail extends Mailable
         );
     }
 
+<<<<<<< HEAD
     /**
      * Get the attachments for the message.
      *
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
+=======
+>>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
     public function attachments(): array
     {
         return [];

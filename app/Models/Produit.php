@@ -7,6 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class Produit extends Model
 {
+<<<<<<< HEAD
     /** @use HasFactory<\Database\Factories\ProduitFactory> */
     use HasFactory;
+=======
+    use HasFactory;
+
+    protected $fillable = [
+        'nom', 'description', 'prix', 'stock', 'photo', 'allergenes', 'categorie_id'
+    ];
+
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class);
+    }
+
+    public function commandes()
+    {
+        return $this->belongsToMany(Commande::class, 'details_commandes')->withPivot('quantite');
+    }
+
+    public function promotions()
+    {
+        return $this->belongsToMany(Promotion::class);
+    }
+>>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
 }
