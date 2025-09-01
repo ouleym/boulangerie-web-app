@@ -3,23 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-<<<<<<< HEAD
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    //
-=======
-use App\Models\User;
-use App\Models\Commande;
-use App\Models\Produit;
-use App\Models\Promotion;
-
-class DashboardController extends Controller
-{
-    /**
-     * Retourner les statistiques principales pour l’admin/gérant.
-     */
     public function stats()
     {
         $nbClients = User::where('role', 'client')->count();
@@ -38,5 +25,4 @@ class DashboardController extends Controller
             'promotions' => $nbPromotions
         ]);
     }
->>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
 }

@@ -13,8 +13,4 @@ use App\Http\Controllers\API\AuthController;
 |
 */
 
-// Authentification via session
-Route::middleware(['web'])->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-});
+

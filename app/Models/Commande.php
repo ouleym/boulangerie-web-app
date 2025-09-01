@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Commande extends Model
 {
-<<<<<<< HEAD
-    /** @use HasFactory<\Database\Factories\CommandeFactory> */
-    use HasFactory;
-=======
     use HasFactory;
 
     protected $fillable = [
@@ -32,9 +28,4 @@ class Commande extends Model
         return $this->hasOne(Livraison::class);
     }
 
-    public function facture()
-    {
-        return $this->hasOne(Facture::class);
-    }
->>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
 }
