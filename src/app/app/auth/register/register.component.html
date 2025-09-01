@@ -1,1 +1,199 @@
-<p>register works!</p>
+<div class="register-container">
+  <div class="register-card">
+    <!-- Header -->
+    <div class="register-header">
+      <div class="logo">
+        <h1>Boulangerie</h1>
+      </div>
+      <h2>Inscription</h2>
+      <p>Créez votre compte pour commencer</p>
+    </div>
+    
+    <!-- Message d'erreur -->
+    <div *ngIf="message" class="error-banner">
+      <div class="error-content">
+        <i class="icon error-icon">⚠️</i>
+        <span>{{ message }}</span>
+      </div>
+    </div>
+    
+    <!-- Formulaire -->
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="register-form">
+      
+      <!-- Nom et Prénom -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nom" class="form-label">Nom</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="nom"
+              formControlName="nom"
+              class="form-control"
+              placeholder="Votre nom"
+              autocomplete="family-name">
+            <i class="input-icon name-icon">👤</i>
+          </div>
+          <div *ngIf="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched" class="error-message">
+            Le nom est requis
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="prenom" class="form-label">Prénom</label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="prenom"
+              formControlName="prenom"
+              class="form-control"
+              placeholder="Votre prénom"
+              autocomplete="given-name">
+            <i class="input-icon name-icon">👤</i>
+          </div>
+          <div *ngIf="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched" class="error-message">
+            Le prénom est requis
+          </div>
+        </div>
+      </div>
+      
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email" class="form-label">Adresse email</label>
+        <div class="input-wrapper">
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-control"
+            placeholder="votre@email.com"
+            autocomplete="email">
+          <i class="input-icon email-icon">📧</i>
+        </div>
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error-message">
+          <span *ngIf="registerForm.get('email')?.errors?.['required']">L'email est requis</span>
+          <span *ngIf="registerForm.get('email')?.errors?.['email']">Format d'email invalide</span>
+        </div>
+      </div>
+      
+      <!-- Téléphone -->
+      <div class="form-group">
+        <label for="telephone" class="form-label">Téléphone</label>
+        <div class="input-wrapper">
+          <input
+            type="tel"
+            id="telephone"
+            formControlName="telephone"
+            class="form-control"
+            placeholder="+221 XX XXX XX XX"
+            autocomplete="tel">
+          <i class="input-icon phone-icon">📱</i>
+        </div>
+        <div *ngIf="registerForm.get('telephone')?.invalid && registerForm.get('telephone')?.touched" class="error-message">
+          Le téléphone est requis
+        </div>
+      </div>
+      
+      <!-- Adresse -->
+      <div class="form-group">
+        <label for="adresse" class="form-label">Adresse</label>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="adresse"
+            formControlName="adresse"
+            class="form-control"
+            placeholder="Votre adresse"
+            autocomplete="street-address">
+          <i class="input-icon address-icon">🏠</i>
+        </div>
+        <div *ngIf="registerForm.get('adresse')?.invalid && registerForm.get('adresse')?.touched" class="error-message">
+          L'adresse est requise
+        </div>
+      </div>
+      
+      <!-- Ville -->
+      <div class="form-group">
+        <label for="ville" class="form-label">Ville</label>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="ville"
+            formControlName="ville"
+            class="form-control"
+            placeholder="Votre ville"
+            autocomplete="address-level2">
+          <i class="input-icon city-icon">🏙️</i>
+        </div>
+        <div *ngIf="registerForm.get('ville')?.invalid && registerForm.get('ville')?.touched" class="error-message">
+          La ville est requise
+        </div>
+      </div>
+      
+      <!-- Mot de passe -->
+      <div class="form-group">
+        <label for="password" class="form-label">Mot de passe</label>
+        <div class="input-wrapper">
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="form-control"
+            placeholder="••••••••"
+            autocomplete="new-password">
+          <i class="input-icon password-icon">🔒</i>
+        </div>
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error-message">
+          <span *ngIf="registerForm.get('password')?.errors?.['required']">Le mot de passe est requis</span>
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+        </div>
+      </div>
+      
+      <!-- Confirmation mot de passe -->
+      <div class="form-group">
+        <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+        <div class="input-wrapper">
+          <input
+            type="password"
+            id="password_confirmation"
+            formControlName="password_confirmation"
+            class="form-control"
+            placeholder="••••••••"
+            autocomplete="new-password">
+          <i class="input-icon password-icon">🔒</i>
+        </div>
+        <div *ngIf="registerForm.get('password_confirmation')?.invalid && registerForm.get('password_confirmation')?.touched" class="error-message">
+          <span *ngIf="registerForm.get('password_confirmation')?.errors?.['required']">La confirmation est requise</span>
+        </div>
+        <div *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('password_confirmation')?.touched" class="error-message">
+          Les mots de passe ne correspondent pas
+        </div>
+      </div>
+      
+      <!-- Bouton d'inscription -->
+      <button type="submit" class="btn-register" [disabled]="registerForm.invalid">
+        <span class="btn-content">
+          <i class="btn-icon">✨</i>
+          Créer mon compte
+        </span>
+      </button>
+    </form>
+    
+    <!-- Footer -->
+    <div class="register-footer">
+      <p class="login-prompt">
+        Déjà un compte ?
+        <a href="/login" class="link-button">Se connecter</a>
+      </p>
+    </div>
+  </div>
+  
+  <!-- Décoration -->
+  <div class="decoration">
+    <div class="bread-icon floating-icon">🥖</div>
+    <div class="croissant-icon floating-icon">🥐</div>
+    <div class="cake-icon floating-icon">🍰</div>
+    <div class="donut-icon floating-icon">🍩</div>
+    <div class="pretzel-icon floating-icon">🥨</div>
+  </div>
+</div>
