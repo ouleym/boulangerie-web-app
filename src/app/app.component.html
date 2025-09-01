@@ -1,2 +1,10 @@
-<app-navbar></app-navbar>
-<router-outlet />
+<!-- app.component.html -->
+<div class="app-container">
+  <!-- La navbar s'affiche conditionnellement selon isLoggedIn -->
+<app-navbar *ngIf="!isLoginPage && isLoggedIn"></app-navbar>
+  
+  <!-- Le contenu principal -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

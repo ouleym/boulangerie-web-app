@@ -1,62 +1,21 @@
 // Variables
 $primary-color: #8B5A3C;
-$primary-light: #A67B5B;
 $primary-dark: #6B4226;
 $secondary-color: #D4A574;
 $accent-color: #E8C5A0;
 $error-color: #E53E3E;
-$success-color: #38A169;
 $text-color: #2D3748;
 $text-light: #718096;
 $background: #F7FAFC;
 $white: #FFFFFF;
 $border-color: #E2E8F0;
-$shadow-color: rgba(0, 0, 0, 0.1);
 
-// Mixins
-@mixin flex-center {
+// Container principal
+.login-container {
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@mixin button-hover {
-  transition: all 0.3s ease;
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  }
-}
-
-@mixin form-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid $border-color;
-  border-radius: 8px;
-  font-size: 16px;
-  background: $white;
-  transition: all 0.3s ease;
-  
-  &:focus {
-    outline: none;
-    border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
-  }
-  
-  &.error {
-    border-color: $error-color;
-    box-shadow: 0 0 0 3px rgba($error-color, 0.1);
-  }
-  
-  &::placeholder {
-    color: $text-light;
-  }
-}
-
-// Styles principaux
-.login-container {
-  min-height: 100vh;
-  @include flex-center;
   background: linear-gradient(135deg, $accent-color 0%, $secondary-color 100%);
   padding: 20px;
   position: relative;
@@ -72,23 +31,18 @@ $shadow-color: rgba(0, 0, 0, 0.1);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 2;
-  animation: slideUp 0.6s ease-out;
 }
 
+// Header
 .login-header {
   text-align: center;
   margin-bottom: 32px;
   
-  .logo {
-    margin-bottom: 16px;
-    
-    h1 {
-      color: $primary-color;
-      font-size: 32px;
-      font-weight: 700;
-      margin: 0;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    }
+  .logo h1 {
+    color: $primary-color;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
   }
   
   h2 {
@@ -105,11 +59,32 @@ $shadow-color: rgba(0, 0, 0, 0.1);
   }
 }
 
+// Message d'erreur
+.error-banner {
+  background: rgba($error-color, 0.1);
+  border: 1px solid rgba($error-color, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  
+  .error-content {
+    display: flex;
+    align-items: center;
+    color: $error-color;
+    font-size: 14px;
+    
+    .error-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+// Formulaire
 .login-form {
   .form-group {
     margin-bottom: 20px;
     
-    label {
+    .form-label {
       display: block;
       color: $text-color;
       font-weight: 500;
@@ -121,139 +96,38 @@ $shadow-color: rgba(0, 0, 0, 0.1);
       position: relative;
       
       .form-control {
-        @include form-input;
-        padding-left: 44px;
-        padding-right: 44px;
+        width: 100%;
+        padding: 12px 16px 12px 44px;
+        border: 2px solid $border-color;
+        border-radius: 8px;
+        font-size: 16px;
+        background: $white;
+        transition: all 0.3s ease;
+        
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        }
+        
+        &::placeholder {
+          color: $text-light;
+        }
       }
       
-      .icon {
+      .input-icon {
         position: absolute;
         left: 14px;
         top: 50%;
         transform: translateY(-50%);
-        color: $text-light;
         font-size: 18px;
-        
-        &.email-icon::before {
-          content: "📧";
-        }
-        
-        &.password-icon::before {
-          content: "🔒";
-        }
-      }
-      
-      .toggle-password {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
         color: $text-light;
-        cursor: pointer;
-        padding: 4px;
-        border-radius: 4px;
-        transition: all 0.2s ease;
-        
-        &:hover {
-          color: $primary-color;
-          background: rgba($primary-color, 0.1);
-        }
-        
-        .icon {
-          position: static;
-          transform: none;
-          
-          &.eye::before {
-            content: "👁️";
-          }
-          
-          &.eye-off::before {
-            content: "🙈";
-          }
-        }
-      }
-    }
-    
-    .error-message {
-      color: $error-color;
-      font-size: 12px;
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      
-      &::before {
-        content: "⚠️";
-        margin-right: 4px;
-      }
-    }
-  }
-  
-  .checkbox-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      font-size: 14px;
-      color: $text-color;
-      
-      .checkbox {
-        display: none;
-        
-        &:checked + .checkmark {
-          background: $primary-color;
-          border-color: $primary-color;
-          
-          &::after {
-            display: block;
-          }
-        }
-      }
-      
-      .checkmark {
-        width: 18px;
-        height: 18px;
-        border: 2px solid $border-color;
-        border-radius: 4px;
-        margin-right: 8px;
-        position: relative;
-        transition: all 0.2s ease;
-        
-        &::after {
-          content: "";
-          position: absolute;
-          display: none;
-          left: 4px;
-          top: 1px;
-          width: 6px;
-          height: 10px;
-          border: solid $white;
-          border-width: 0 2px 2px 0;
-          transform: rotate(45deg);
-        }
-      }
-    }
-    
-    .forgot-password {
-      color: $primary-color;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      
-      &:hover {
-        text-decoration: underline;
-        color: $primary-dark;
       }
     }
   }
 }
 
+// Bouton
 .btn-login {
   width: 100%;
   background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
@@ -265,67 +139,43 @@ $shadow-color: rgba(0, 0, 0, 0.1);
   font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
-  @include button-hover;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.3s ease;
   
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-    
-    &:hover {
-      transform: none;
-      box-shadow: none;
-    }
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
   
-  &.loading {
-    color: transparent;
-  }
-  
-  .loading-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: $white;
-    @include flex-center;
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
-  }
-  
-  .spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid transparent;
-    border-top: 2px solid $white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+    
+    .btn-icon {
+      font-size: 18px;
+    }
   }
 }
 
+// Footer
 .login-footer {
   text-align: center;
   margin-top: 24px;
   
-  p {
+  .register-prompt {
     color: $text-light;
     font-size: 14px;
     margin: 0;
-  }
-  
-  .link-button {
-    background: none;
-    border: none;
-    color: $primary-color;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s ease;
     
-    &:hover {
-      text-decoration: underline;
-      color: $primary-dark;
+    .link-button {
+      color: $primary-color;
+      font-weight: 600;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
@@ -338,9 +188,7 @@ $shadow-color: rgba(0, 0, 0, 0.1);
   pointer-events: none;
   z-index: 1;
   
-  .bread-icon,
-  .croissant-icon,
-  .cake-icon {
+  .floating-icon {
     position: absolute;
     font-size: 60px;
     opacity: 0.1;
@@ -366,23 +214,7 @@ $shadow-color: rgba(0, 0, 0, 0.1);
   }
 }
 
-// Animations
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
+// Animation
 @keyframes float {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);
@@ -402,21 +234,7 @@ $shadow-color: rgba(0, 0, 0, 0.1);
     padding: 24px;
   }
   
-  .login-header {
-    .logo h1 {
-      font-size: 28px;
-    }
-    
-    h2 {
-      font-size: 20px;
-    }
-  }
-  
-  .decoration {
-    .bread-icon,
-    .croissant-icon,
-    .cake-icon {
-      font-size: 40px;
-    }
+  .login-header .logo h1 {
+    font-size: 28px;
   }
 }

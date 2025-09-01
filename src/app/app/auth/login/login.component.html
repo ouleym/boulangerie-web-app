@@ -9,100 +9,68 @@
       <p>Connectez-vous à votre compte pour continuer</p>
     </div>
 
+    <!-- Message d'erreur -->
+    <div *ngIf="message" class="error-banner">
+      <div class="error-content">
+        <i class="icon error-icon">⚠️</i>
+        <span>{{ message }}</span>
+      </div>
+    </div>
+
     <!-- Formulaire -->
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
       <!-- Email -->
       <div class="form-group">
-        <label for="email">Adresse email</label>
+        <label for="email" class="form-label">Adresse email</label>
         <div class="input-wrapper">
-          <input 
-            type="email" 
-            id="email" 
+          <input
+            type="email"
+            id="email"
             formControlName="email"
             class="form-control"
-            [class.error]="email?.invalid && email?.touched"
             placeholder="votre@email.com"
             autocomplete="email">
-          <i class="icon email-icon"></i>
-        </div>
-        <div class="error-message" *ngIf="email?.invalid && email?.touched">
-          {{ getEmailError() }}
+          <i class="input-icon email-icon">📧</i>
         </div>
       </div>
 
       <!-- Mot de passe -->
       <div class="form-group">
-        <label for="password">Mot de passe</label>
+        <label for="password" class="form-label">Mot de passe</label>
         <div class="input-wrapper">
-          <input 
-            [type]="showPassword ? 'text' : 'password'" 
-            id="password" 
+          <input
+            type="password"
+            id="password"
             formControlName="password"
             class="form-control"
-            [class.error]="password?.invalid && password?.touched"
             placeholder="••••••••"
             autocomplete="current-password">
-          <i class="icon password-icon"></i>
-          <button 
-            type="button" 
-            class="toggle-password"
-            (click)="togglePasswordVisibility()"
-            [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
-            <i [class]="showPassword ? 'icon eye-off' : 'icon eye'"></i>
-          </button>
+          <i class="input-icon password-icon">🔒</i>
         </div>
-        <div class="error-message" *ngIf="password?.invalid && password?.touched">
-          {{ getPasswordError() }}
-        </div>
-      </div>
-
-      <!-- Se souvenir -->
-      <div class="form-group checkbox-group">
-        <label class="checkbox-label">
-          <input 
-            type="checkbox" 
-            formControlName="remember"
-            class="checkbox">
-          <span class="checkmark"></span>
-          Se souvenir de moi
-        </label>
-        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
       </div>
 
       <!-- Bouton de connexion -->
-      <button 
-        type="submit" 
-        class="btn-login"
-        [disabled]="isLoading || loginForm.invalid"
-        [class.loading]="isLoading">
-        <span *ngIf="!isLoading">Se connecter</span>
-        <span *ngIf="isLoading" class="loading-content">
-          <i class="spinner"></i>
-          Connexion...
+      <button type="submit" class="btn-login">
+        <span class="btn-content">
+          <i class="btn-icon">🔑</i>
+          Se connecter
         </span>
       </button>
-
     </form>
 
     <!-- Footer -->
     <div class="login-footer">
-      <p>
-        Pas encore de compte ? 
-        <button 
-          type="button" 
-          class="link-button"
-          (click)="navigateToRegister()">
-          Créer un compte
-        </button>
+      <p class="register-prompt">
+        Pas encore de compte ?
+        <a href="#" class="link-button">Créer un compte</a>
       </p>
     </div>
   </div>
 
   <!-- Décoration -->
   <div class="decoration">
-    <div class="bread-icon">🥖</div>
-    <div class="croissant-icon">🥐</div>
-    <div class="cake-icon">🍰</div>
+    <div class="bread-icon floating-icon">🥖</div>
+    <div class="croissant-icon floating-icon">🥐</div>
+    <div class="cake-icon floating-icon">🍰</div>
   </div>
 </div>

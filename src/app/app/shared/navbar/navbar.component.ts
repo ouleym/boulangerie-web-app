@@ -1,136 +1,121 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
-import { NgIf } from '@angular/common';
-import { User } from '../../models/user.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [NgIf, RouterLink],
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
-  currentUser: User | null = null;
-  dashboardRoute = '/login';
-  brandTitle = 'E-Commerce App';
+  userRoles: string[] = [];
+  panierCount = 0;
+  brandTitle = 'Boulangerie';
+  dashboardRoute = '/dashboard';
+  userInitials = '';
+  userDisplayName = '';
+  userRoleDisplay = '';
+  
+  private subscription: Subscription = new Subscription();
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
-    // Initialiser l'état actuel immédiatement
-    this.isLoggedIn = this.authService.isAuthenticated;
-    this.currentUser = this.authService.currentUser;
-    
-    if (this.isLoggedIn && this.currentUser) {
-      this.setDashboardInfo();
-    }
-
-    // S'abonner aux changements d'authentification
-    this.authService.isAuthenticated$.subscribe(isAuth => {
-      this.isLoggedIn = isAuth;
-      if (!isAuth) {
-        this.currentUser = null;
-        this.brandTitle = 'E-Commerce App';
-        this.dashboardRoute = '/login';
-      }
-    });
-
-    // S'abonner aux changements d'utilisateur
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-      if (this.isLoggedIn && this.currentUser) {
-        this.setDashboardInfo();
-      }
-    });
-  }
-
-  /**
-   * Déterminer le dashboard et le titre en fonction du rôle
-   */
-  private setDashboardInfo(): void {
-    if (this.authService.hasRole('Admin')) {
-      this.dashboardRoute = '/admin';
-      this.brandTitle = 'Admin Panel';
-    } else if (this.authService.hasRole('Employee')) {
-      this.dashboardRoute = '/dashboard/employe';
-      this.brandTitle = 'Employee Panel';
-    } else if (this.authService.hasRole('Client')) {
-      this.dashboardRoute = '/dashboard/client';
-      this.brandTitle = 'Client Panel';
-    } else {
-      this.dashboardRoute = '/login';
-      this.brandTitle = 'E-Commerce App';
-    }
-  }
-
-  /**
-   * Déconnexion
-   */
-  logout(): void {
-    this.authService.logout().subscribe();
-  }
-
-  /**
-   * Vérifier si l'utilisateur a accès aux fonctionnalités admin
-   */
-  get canAccessAdmin(): boolean {
-    return this.authService.hasRole('Admin') || this.authService.hasRole('admin') || this.authService.hasRole('super-admin');
-  }
-
-  /**
-   * Obtenir le nom d'affichage de l'utilisateur (prénom + nom)
-   */
-  get userDisplayName(): string {
-    if (!this.currentUser) {
-      return 'Utilisateur';
-    }
-    
-    // Si on a un nom complet, l'utiliser
-    if (this.currentUser.nom) {
-      return this.currentUser.nom;
-    }
-    
-    // Sinon construire avec prénom + nom
-    const prenom = this.currentUser.prenom || '';
-    const nom = this.currentUser.nom || '';
-    
-    if (prenom && nom) {
-      return `${prenom} ${nom}`;
-    } else if (prenom) {
-      return prenom;
-    } else if (nom) {
-      return nom;
-    }
-    
-    // En dernier recours, utiliser l'email
-    return this.currentUser.email || 'Utilisateur';
-  }
-
-  /**
-   * Obtenir les initiales pour l'avatar
-   */
-  get userInitials(): string {
-    if (!this.currentUser) {
-      return 'U';
-    }
-
-    const prenom = this.currentUser.prenom || '';
-    const nom = this.currentUser.nom || '';
-    
-    if (prenom && nom) {
-      return `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase();
-    } else if (this.currentUser.nom) {
-      const parts = this.currentUser.nom.split(' ');
-      if (parts.length >= 2) {
-        return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
+  ngOnInit() {
+    this.subscription = this.authService.loggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+      
+      if (status) {
+        this.loadUserData();
       } else {
-        return parts[0].charAt(0).toUpperCase();
+        this.clearUserData();
       }
-    }
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  private loadUserData(): void {
+    this.userRoles = this.authService.getUserRoles();
+    const decoded = this.authService.getDecodedToken();
     
-    return this.currentUser.email?.charAt(0).toUpperCase() || 'U';
+    console.log('Rôles de l\'utilisateur:', this.userRoles); // Debug
+    
+    if (decoded) {
+      this.userDisplayName = decoded.nom || decoded.email || 'Utilisateur';
+      this.userInitials = this.generateInitials(this.userDisplayName);
+      this.userRoleDisplay = this.formatRoles(this.userRoles);
+      this.setDashboardRoute();
+    }
+  }
+
+  private clearUserData(): void {
+    this.userRoles = [];
+    this.userDisplayName = '';
+    this.userInitials = '';
+    this.userRoleDisplay = '';
+    this.dashboardRoute = '/dashboard';
+  }
+
+  private generateInitials(name: string): string {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  }
+
+  private formatRoles(roles: string[]): string {
+    const roleLabels: { [key: string]: string } = {
+      'Admin': 'Administrateur',
+      'Employe': 'Employé', 
+      'Client': 'Client',
+      // Support pour les minuscules aussi
+      'admin': 'Administrateur',
+      'employe': 'Employé',
+      'client': 'Client'
+    };
+    
+    return roles
+      .map(role => roleLabels[role] || role)
+      .join(', ');
+  }
+
+  private setDashboardRoute(): void {
+    // ✅ CORRECTION : Utiliser les noms de rôles avec majuscule comme dans les routes
+    if (this.userRoles.includes('Admin')) {
+      this.dashboardRoute = '/dashboard/admin';
+    } else if (this.userRoles.includes('Employe')) {
+      this.dashboardRoute = '/dashboard/employe';
+    } else if (this.userRoles.includes('Client')) {
+      this.dashboardRoute = '/dashboard/client';
+    } else {
+      this.dashboardRoute = '/dashboard/client'; // Par défaut
+    }
+  }
+
+  // ✅ CORRECTION : Getters avec les bons noms de rôles
+  get isClient(): boolean {
+    return this.userRoles.includes('Client');
+  }
+
+  get isEmployeOrAdmin(): boolean {
+    return this.userRoles.includes('Employe') || this.userRoles.includes('Admin');
+  }
+
+  get isAdmin(): boolean {
+    return this.userRoles.includes('Admin');
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
