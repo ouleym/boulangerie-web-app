@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-<<<<<<< HEAD
-    /** @use HasFactory<\Database\Factories\MessageFactory> */
-    use HasFactory;
-=======
     use HasFactory;
 
     protected $fillable = ['conversation_id', 'sender_id', 'contenu'];
@@ -24,5 +20,4 @@ class Message extends Model
     {
         return $this->belongsTo(User::class, 'sender_id');
     }
->>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
 }

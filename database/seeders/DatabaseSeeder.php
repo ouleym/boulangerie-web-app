@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminUsersSeeder::class,
         ]);
+        $this->call(UserSeeder::class);
+
 
         // Créer des utilisateurs de test (optionnel - décommentez si nécessaire)
         // User::factory(10)->create();

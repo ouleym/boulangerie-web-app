@@ -2,22 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'nom',
         'prenom',
@@ -28,21 +23,11 @@ class User extends Authenticatable
         'ville',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -52,34 +37,28 @@ class User extends Authenticatable
     }
 
     /**
+     * JWT : Identifiant utilisateur
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * JWT : Claims personnalisés (ajout des rôles Spatie)
+     */
+    public function getJWTCustomClaims(): array
+    {
+        return [
+            'roles' => $this->getRoleNames() // ✅ Les rôles seront inclus dans le token
+        ];
+    }
+
+    /**
      * Accesseur pour le nom complet
      */
     public function getNomCompletAttribute(): string
     {
         return $this->prenom . ' ' . $this->nom;
-    }
-
-    /**
-     * Vérifier si l'utilisateur est admin
-     */
-    public function isAdmin(): bool
-    {
-        return $this->hasRole('Admin');
-    }
-
-    /**
-     * Vérifier si l'utilisateur est employé
-     */
-    public function isEmployee(): bool
-    {
-        return $this->hasRole(['Employe', 'Admin']);
-    }
-
-    /**
-     * Vérifier si l'utilisateur est client
-     */
-    public function isClient(): bool
-    {
-        return $this->hasRole('Client');
     }
 }

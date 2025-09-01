@@ -4,73 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-=======
-use App\Models\Produit;
-use App\Models\Categorie;
-use App\Models\Review;
-use Illuminate\Support\Facades\Validator;
->>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
 
 class ProduitController extends Controller
 {
     /**
-<<<<<<< HEAD
      * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-=======
-     * Liste des produits (protégée).
      */
     public function index()
     {
@@ -273,6 +211,5 @@ class ProduitController extends Controller
             'message' => 'Avis ajouté avec succès',
             'data' => $review
         ], 201);
->>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
     }
 }

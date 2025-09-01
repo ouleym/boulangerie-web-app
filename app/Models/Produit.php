@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Produit extends Model
 {
-<<<<<<< HEAD
-    /** @use HasFactory<\Database\Factories\ProduitFactory> */
-    use HasFactory;
-=======
+
     use HasFactory;
 
     protected $fillable = [
@@ -31,5 +28,4 @@ class Produit extends Model
     {
         return $this->belongsToMany(Promotion::class);
     }
->>>>>>> 625c931 (Ajout de la partie backend Laravel complète)
 }
