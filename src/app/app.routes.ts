@@ -15,7 +15,6 @@ import { CommandesDetailComponent } from './app/commandes/detail/detail.componen
 import { CommandesStatusComponent } from './app/commandes/status/status.component';
 import { CommandesPanierComponent } from './app/commandes/panier/panier.component';
 import { CommandesCheckoutComponent } from './app/commandes/checkout/checkout.component';
-import { ConversationsComponent } from './app/support/conversations/conversations.component';
 import { ChatComponent } from './app/support/chat/chat.component';
 import { MessagesComponent } from './app/support/messages/messages.component';
 import { UsersListComponent } from './app/users/list/list.component';
@@ -49,6 +48,24 @@ export const routes: Routes = [
     path: 'register', 
     component: RegisterComponent, 
     title: 'Inscription - Boulangerie'
+  },
+
+  // ============================================
+  // ROUTES CHAT PRINCIPALES (Tous les rôles)
+  // ============================================
+  {
+    path: 'chat',
+    component: ChatComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Client', 'Employe', 'Admin'] },
+    title: 'Chat Support'
+  },
+  {
+    path: 'chat/:id',
+    component: ChatComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Client', 'Employe', 'Admin'] },
+    title: 'Conversation Chat'
   },
 
   // ============================================
@@ -169,19 +186,19 @@ export const routes: Routes = [
     data: { roles: ['Client', 'Employe', 'Admin'] },
     children: [
       { 
-        path: '', 
-        component: ConversationsComponent, 
-        title: 'Support Client' 
-      },
-      { 
         path: 'chat', 
         component: ChatComponent, 
         title: 'Chat Support' 
       },
       { 
+        path: 'chat/:id', 
+        component: ChatComponent, 
+        title: 'Conversation Support'
+      },
+      { 
         path: 'conversation/:id', 
         component: MessagesComponent, 
-        title: 'Conversation Support' 
+        title: 'Messages Support' 
       }
     ]
   },
@@ -400,19 +417,19 @@ export const routes: Routes = [
         ]
       },
 
-      // ========== SUPPORT ADMINISTRATEUR ==========
+      // ========== GESTION CHAT SUPPORT ==========
       {
         path: 'support',
         children: [
           { 
-            path: '', 
-            component: ConversationsComponent, 
-            title: 'Admin - Gestion Support' 
+            path: 'chat', 
+            component: ChatComponent, 
+            title: 'Admin - Gestion Chat Support' 
           },
           { 
-            path: 'conversation/:id', 
-            component: MessagesComponent, 
-            title: 'Admin - Conversation Support' 
+            path: 'chat/:id', 
+            component: ChatComponent, 
+            title: 'Admin - Conversation Support'
           }
         ]
       }
@@ -447,9 +464,9 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
-  // Route 404 - Redirection intelligente
+  // Route 404 - Redirection vers /chat si connecté, sinon /login
   { 
     path: '**', 
-    redirectTo: '/login' 
+    redirectTo: '/login'
   }
 ];

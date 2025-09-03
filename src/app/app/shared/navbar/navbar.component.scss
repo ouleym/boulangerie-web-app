@@ -1,169 +1,31 @@
-// navbar.component.scss
+.modern-nav {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  margin: 12px auto;
+  padding: 6px 20px;
+  max-width: 1300px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
 
-.neumorphism-nav {
-  background: #f5f5f5;
-  border: none;
-  box-shadow: 
-    8px 8px 16px rgba(163, 177, 198, 0.6), 
-    -8px -8px 16px rgba(255, 255, 255, 0.5);
-  
   .navbar-brand {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    text-decoration: none;
-    
-    &:hover {
-      transform: translateY(-1px);
-      transition: transform 0.2s ease;
-    }
-  }
-
-  .nav-link {
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    margin: 0 4px;
-    
-    &:hover {
-      background-color: rgba(var(--bs-primary-rgb), 0.1);
-      transform: translateY(-1px);
-    }
-    
-    &.active {
-      background-color: var(--bs-primary);
-      color: white !important;
-      font-weight: 600;
-    }
-  }
-
-  // Avatar circle
-  .avatar-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--bs-primary), var(--bs-primary-dark, #0056b3));
-    color: white;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    
+    margin-right: 60px;
+    color: var(--bs-primary);   // ✅ couleur simple (bleu bootstrap)
+    text-decoration: none;
+
     &:hover {
-      transform: scale(1.05);
-      transition: transform 0.2s ease;
+      opacity: 0.85;
+      transform: translateY(-2px);
     }
   }
 
-  // Badge pour le panier
-  .badge {
-    font-size: 0.7rem;
-    border-radius: 10px;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  // Dropdown amélioré
-  .dropdown-menu {
-    border: none;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    border-radius: 12px;
-    padding: 8px 0;
-    min-width: 250px;
-    
-    .dropdown-item {
-      padding: 8px 20px;
-      transition: all 0.2s ease;
-      border-radius: 8px;
-      margin: 2px 8px;
-      
-      &:hover {
-        background-color: rgba(var(--bs-primary-rgb), 0.1);
-        transform: translateX(4px);
-      }
-      
-      i {
-        width: 20px;
-        text-align: center;
-      }
-    }
-    
-    .dropdown-header {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--bs-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 8px 20px 4px;
-    }
-    
-    .dropdown-divider {
-      margin: 8px 12px;
-      opacity: 0.3;
-    }
-  }
-
-  // Responsive adjustments
-  @media (max-width: 991.98px) {
-    .navbar-nav {
-      .nav-item {
-        margin: 4px 0;
-      }
-      
-      .dropdown-menu {
-        position: static;
-        float: none;
-        box-shadow: none;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        margin-top: 8px;
-      }
-    }
-  }
-
-  // States for role-based styling
-  &[data-role="admin"] {
-    .navbar-brand {
-      color: #dc3545 !important; // Rouge pour admin
-    }
-  }
-
-  &[data-role="employe"] {
-    .navbar-brand {
-      color: #fd7e14 !important; // Orange pour employé
-    }
-  }
-
-  &[data-role="client"] {
-    .navbar-brand {
-      color: var(--bs-primary) !important; // Bleu pour client
-    }
-  }
-}
-
-// Animation d'entrée pour la navbar
-.navbar {
-  animation: slideDown 0.5s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
+  .brand-icon {
+    font-size: 1.8rem;
+    margin-right: 8px;
+    color: var(--bs-primary);
   }
 }

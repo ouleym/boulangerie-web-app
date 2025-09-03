@@ -1,0 +1,83 @@
+
+
+<!-- Panel de chat latéral -->
+<div class="chat-panel" 
+     [class.open]="isChatPanelOpen && isAuthenticated" 
+     [class.collapsed-sidebar]="isCollapsed">
+  
+  <!-- En-tête du panel chat -->
+  <div class="chat-panel-header">
+    <div class="chat-panel-title">
+      <i class="fas fa-comments"></i>
+      <h3>Conversations</h3>
+    </div>
+    
+    <div class="chat-panel-actions">
+      <button class="btn-new-chat" (click)="startNewChat()" title="Nouvelle conversation">
+        <i class="fas fa-plus"></i>
+      </button>
+      
+      <button class="btn-close" (click)="closeChatPanel()" title="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenu du panel -->
+  <div class="chat-panel-content">
+    <!-- Loading -->
+    <div class="chat-loading" *ngIf="isLoadingChats">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Chargement...</span>
+    </div>
+
+    <!-- Liste des conversations -->
+    <div class="chat-list" *ngIf="!isLoadingChats">
+      <!-- Aucune conversation -->
+      <div class="empty-chats" *ngIf="chats.length === 0">
+        <i class="fas fa-comment-slash"></i>
+        <p>Aucune conversation</p>
+        <button class="btn-start-chat" (click)="startNewChat()">
+          Commencer une conversation
+        </button>
+      </div>
+
+      <!-- Liste des conversations -->
+      <div class="chat-item" 
+           *ngFor="let chat of chats; trackBy: trackByFn"
+           [class.active]="currentChat?.id === chat.id"
+           (click)="selectChat(chat)">
+        
+        <div class="chat-content">
+          <div class="chat-title">{{ formatChatTitle(chat.title) }}</div>
+          <div class="chat-preview" *ngIf="chat.latest_message">
+            {{ formatChatTitle(chat.latest_message.content) }}
+          </div>
+        </div>
+        
+        <div class="chat-meta">
+          <span class="chat-time">{{ formatChatDate(chat.updated_at) }}</span>
+          <button class="btn-delete" 
+                  (click)="deleteChat(chat, $event)" 
+                  title="Supprimer">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bouton d'action rapide -->
+  <div class="chat-panel-footer">
+    <button class="btn-quick-chat" (click)="startNewChat()">
+      <i class="fas fa-plus"></i>
+      <span>Nouvelle conversation</span>
+    </button>
+  </div>
+</div>
+
+<!-- Overlay pour fermer le panel -->
+<div class="chat-overlay" 
+     *ngIf="isChatPanelOpen && isAuthenticated"
+     (click)="closeChatPanel()">
+</div>

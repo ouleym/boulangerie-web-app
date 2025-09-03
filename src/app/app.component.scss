@@ -1,0 +1,66 @@
+// =================== VARIABLES ===================
+$navbar-height: 70px;
+$chat-panel-width: 400px;
+
+// =================== LAYOUT PRINCIPAL ===================
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+// =================== CONTENU PRINCIPAL ===================
+.main-content {
+  flex: 1;
+  width: 100%;
+  transition: all 0.3s ease;
+  
+  // Avec navbar: ajouter padding-top pour compenser la navbar fixe
+  &.with-navbar {
+    padding-top: $navbar-height;
+  }
+  
+  // Responsive: sur mobile, s'assurer que le chat n'interfère pas
+  @media (min-width: 769px) {
+    // Sur desktop, laisser un peu d'espace à droite quand le chat peut s'ouvrir
+    padding-right: 0;
+  }
+}
+
+// =================== RESPONSIVE ===================
+@media (max-width: 768px) {
+  .main-content {
+    // Sur mobile, le contenu prend toute la largeur
+    width: 100%;
+    padding-right: 0;
+  }
+}
+
+// =================== UTILITAIRES ===================
+// Classes utilitaires pour le spacing si besoin
+.container-fluid {
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+// Amélioration de l'expérience utilisateur
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

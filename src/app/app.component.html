@@ -1,10 +1,13 @@
 <!-- app.component.html -->
 <div class="app-container">
-  <!-- La navbar s'affiche conditionnellement selon isLoggedIn -->
-<app-navbar *ngIf="!isLoginPage && isLoggedIn"></app-navbar>
+  <!-- Navbar en haut (seulement si connecté et pas sur login) -->
+  <app-navbar *ngIf="!isLoginPage && isLoggedIn"></app-navbar>
   
-  <!-- Le contenu principal -->
-  <main class="main-content">
+  <!-- Le contenu principal (sans marge gauche maintenant) -->
+  <main class="main-content" [class.with-navbar]="!isLoginPage && isLoggedIn">
     <router-outlet></router-outlet>
   </main>
+  
+  <!-- Chat panel à droite (seulement si connecté et pas sur login) -->
+  <app-chat *ngIf="!isLoginPage && isLoggedIn"></app-chat>
 </div>

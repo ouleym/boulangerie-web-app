@@ -3,10 +3,11 @@ import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { AuthService } from './app/core/auth.service';
 import { NavbarComponent } from './app/shared/navbar/navbar.component';
 import { NgIf } from '@angular/common';
+import { ChatComponent } from "./app/support/chat/chat.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent,NgIf],
+  imports: [RouterOutlet, NavbarComponent, NgIf, ChatComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -18,8 +19,8 @@ export class AppComponent {
     // Surveille la navigation pour détecter si on est sur la page de login
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.isLoginPage = event.urlAfterRedirects === '/login';
-        this.isLoggedIn = this.authService.isAuthenticated(); // ✅ vérifier login
+        this.isLoginPage = event.urlAfterRedirects === '/login' || event.urlAfterRedirects === '/register';
+        this.isLoggedIn = this.authService.isAuthenticated();
       }
     });
   }

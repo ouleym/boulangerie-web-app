@@ -20,38 +20,47 @@ export interface JwtPayload {
 })
 export class AuthService {
   redirectUrl: string = '/login';
-  
+ 
   private loggedInSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
   public loggedIn$ = this.loggedInSubject.asObservable();
-
+  
   constructor(private httpClient: HttpClient) {}
-
-  login(request: any): Observable<AuthResponse> {
-    return this.httpClient.post(
-      `${environment.ApiUrl}/login`,
-      request,
-      { responseType: 'text' }
-    ).pipe(
-      map((resp: string) => {
-        try {
-          const parsed = JSON.parse(resp);
-          if (parsed.token) {
-            localStorage.setItem('token', parsed.token);
-            this.loggedInSubject.next(true);
-            console.log('Utilisateur connecté avec succès');
-          }
-          return parsed as AuthResponse;
-        } catch (e) {
-          console.error('La réponse JSON est invalide :', resp);
-          throw new Error('Réponse serveur non conforme.');
-        }
-      }),
-      catchError(error => {
-        console.error('Erreur de login :', error);
-        return throwError(() => error);
-      })
-    );
-  }
+  
+ login(request: any): Observable<AuthResponse> {
+  return this.httpClient.post<AuthResponse>(
+    `${environment.ApiUrl}/login`,
+    request,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }
+  ).pipe(
+    map((response: AuthResponse) => {
+      console.log('Réponse du serveur:', response);
+      
+      if (response && response.token) {
+        localStorage.setItem('token', response.token);
+        this.loggedInSubject.next(true);
+      } else {
+        throw new Error('Token manquant dans la réponse du serveur');
+      }
+      
+      return response;
+    }),
+    catchError(error => {
+      console.error('Erreur de login :', error);
+      
+      // Log de débogage
+      if (error.error && typeof error.error === 'string') {
+        console.log('Réponse brute:', error.error);
+      }
+      
+      return throwError(() => error);
+    })
+  );
+}
 
   register(request: any): Observable<AuthResponse> {
     return this.httpClient.post<AuthResponse>(`${environment.ApiUrl}/register`, request).pipe(
@@ -75,7 +84,7 @@ export class AuthService {
   getDecodedToken(): JwtPayload | null {
     const token = this.getToken();
     if (!token) return null;
-    
+   
     try {
       return jwtDecode<JwtPayload>(token);
     } catch (error) {
@@ -93,17 +102,17 @@ export class AuthService {
   isAuthenticated(): boolean {
     const token = this.getToken();
     if (!token) return false;
-
+    
     const decoded = this.getDecodedToken();
     if (!decoded) return false;
-
+    
     const now = Math.floor(Date.now() / 1000);
     const isValid = decoded.exp > now;
-    
+   
     if (!isValid) {
       this.logout(); // Token expiré, déconnecter automatiquement
     }
-    
+   
     return isValid;
   }
 

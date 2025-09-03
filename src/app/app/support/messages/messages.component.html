@@ -1,1 +1,101 @@
-<p>messages works!</p>
+<div class="messages-list">
+  <div 
+    class="message"
+    [class.user-message]="message.role === 'user'"
+    [class.assistant-message]="message.role === 'assistant'"
+    [class.system-message]="message.role === 'system'"
+    *ngFor="let message of messages; trackBy: trackByMessageId"
+  >
+    <div class="message-avatar">
+      <div class="avatar" [class.user-avatar]="message.role === 'user'" [class.assistant-avatar]="message.role === 'assistant'">
+        <ng-container *ngIf="message.role === 'user'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </ng-container>
+        <ng-container *ngIf="message.role === 'assistant'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="m12 1 0 6"/>
+            <path d="m12 17 0 6"/>
+            <path d="m4.2 4.2 4.2 4.2"/>
+            <path d="m15.6 15.6 4.2 4.2"/>
+            <path d="m1 12 6 0"/>
+            <path d="m17 12 6 0"/>
+            <path d="m4.2 19.8 4.2-4.2"/>
+            <path d="m15.6 8.4 4.2-4.2"/>
+          </svg>
+        </ng-container>
+      </div>
+    </div>
+    
+    <div class="message-content">
+      <div class="message-header">
+        <span class="message-sender">
+          {{ message.role === 'user' ? 'Vous' : 'Assistant' }}
+        </span>
+        <span class="message-time">
+          {{ formatMessageTime(message.created_at) }}
+        </span>
+      </div>
+      
+      <div class="message-text" [innerHTML]="formatMessageContent(message.content)">
+      </div>
+      
+      <div class="message-actions" *ngIf="message.role === 'assistant'">
+        <button 
+          class="action-btn copy-btn"
+          (click)="copyMessage(message.content)"
+          title="Copier le message"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </button>
+        
+        <button 
+          class="action-btn like-btn"
+          (click)="toggleLike(message)"
+          [class.liked]="message.meta?.liked"
+          title="J'aime cette réponse"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Indicateur de frappe -->
+  <div class="message assistant-message typing-indicator" *ngIf="isTyping">
+    <div class="message-avatar">
+      <div class="avatar assistant-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="m12 1 0 6"/>
+          <path d="m12 17 0 6"/>
+          <path d="m4.2 4.2 4.2 4.2"/>
+          <path d="m15.6 15.6 4.2 4.2"/>
+          <path d="m1 12 6 0"/>
+          <path d="m17 12 6 0"/>
+          <path d="m4.2 19.8 4.2-4.2"/>
+          <path d="m15.6 8.4 4.2-4.2"/>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="message-content">
+      <div class="typing-animation">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="typing-text">L'assistant est en train d'écrire...</span>
+      </div>
+    </div>
+  </div>
+</div>

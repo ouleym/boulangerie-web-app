@@ -1,1 +1,242 @@
-<p>chat works!</p>
+<!-- Chat Panel - Affiché à droite -->
+<div class="chat-panel" [class.visible]="isChatVisible" *ngIf="isAuthenticated && isClient">
+  
+  <!-- En-tête du chat -->
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <h3 class="chat-title">
+        <i class="fas fa-robot"></i>
+        {{ chatTitle }}
+      </h3>
+      <div class="chat-info" *ngIf="currentChat">
+        <span class="message-count">{{ messageCount }} messages</span>
+        <span class="chat-date">{{ formatChatDate(currentChat.updated_at) }}</span>
+      </div>
+    </div>
+    
+    <div class="chat-header-actions">
+      <!-- Toggle liste des chats -->
+      <button class="header-btn" (click)="toggleChatList()" title="Liste des conversations">
+        <i class="fas fa-list"></i>
+      </button>
+      
+      <!-- Nouveau chat -->
+      <button class="header-btn" (click)="startNewChat()" title="Nouvelle conversation">
+        <i class="fas fa-plus"></i>
+      </button>
+      
+      <!-- Fermer chat -->
+      <button class="header-btn close-btn" (click)="hideChat()" title="Fermer le chat">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Liste des chats (déroulante) -->
+  <div class="chat-list-dropdown" *ngIf="showChatList">
+    <div class="chat-list-header">
+      <h4>Conversations</h4>
+      <button class="close-list-btn" (click)="toggleChatList()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="chat-list-content">
+      <!-- Chargement -->
+      <div class="loading-state" *ngIf="isLoading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Chargement...</span>
+      </div>
+      
+      <!-- Aucun chat -->
+      <div class="empty-chats" *ngIf="!isLoading && !hasChats">
+        <i class="fas fa-comment-slash"></i>
+        <p>Aucune conversation</p>
+        <button class="start-chat-btn" (click)="startNewChat()">
+          Commencer une conversation
+        </button>
+      </div>
+      
+      <!-- Liste des chats -->
+      <div class="chat-items" *ngIf="!isLoading && hasChats">
+        <div class="chat-item" 
+             *ngFor="let chat of chats"
+             [class.active]="currentChat?.id === chat.id"
+             (click)="selectChat(chat)">
+          
+          <div class="chat-item-content">
+            <div class="chat-item-title">{{ formatChatTitle(chat.title) }}</div>
+            <div class="chat-item-preview" *ngIf="chat.latest_message">
+              {{ formatChatTitle(chat.latest_message.content) }}
+            </div>
+          </div>
+          
+          <div class="chat-item-actions">
+            <span class="chat-item-date">{{ formatChatDate(chat.updated_at) }}</span>
+            <button class="delete-btn" 
+                    (click)="deleteChat(chat, $event)" 
+                    title="Supprimer">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu principal du chat -->
+  <div class="chat-content">
+    
+    <!-- Message d'erreur -->
+    <div class="error-state" *ngIf="hasError && !isLoading">
+      <div class="error-content">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h4>Erreur</h4>
+        <p>{{ errorMessage }}</p>
+        <button class="retry-btn" (click)="startNewChat()">
+          <i class="fas fa-refresh"></i>
+          Recommencer
+        </button>
+      </div>
+    </div>
+
+    <!-- Message de bienvenue -->
+    <div class="welcome-state" *ngIf="!currentChat && !isLoading && !hasError">
+      <div class="welcome-content">
+        <div class="welcome-icon">
+          <i class="fas fa-robot"></i>
+        </div>
+        <h3>Assistant IA Personnel</h3>
+        <p>Bonjour ! Comment puis-je vous aider aujourd'hui ?</p>
+        <div class="suggestion-buttons">
+          <button class="suggestion-btn" (click)="setSuggestion('Expliquez-moi...')">
+            <i class="fas fa-lightbulb"></i>
+            Poser une question
+          </button>
+          <button class="suggestion-btn" (click)="setSuggestion('Aidez-moi à...')">
+            <i class="fas fa-hands-helping"></i>
+            Demander de l'aide
+          </button>
+          <button class="suggestion-btn" (click)="setSuggestion('Créez-moi...')">
+            <i class="fas fa-magic"></i>
+            Créer du contenu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone des messages -->
+    <div class="messages-zone" #messagesContainer *ngIf="currentChat && !isLoading">
+      <div class="messages-wrapper">
+        
+        <!-- Messages existants -->
+        <div class="message" 
+             *ngFor="let message of currentChat.messages; let i = index"
+             [class.user]="message.role === 'user'"
+             [class.assistant]="message.role === 'assistant'"
+             [class.editing]="editingMessageId === message.id">
+          
+          <div class="message-avatar">
+            <i class="fas fa-user" *ngIf="message.role === 'user'"></i>
+            <i class="fas fa-robot" *ngIf="message.role === 'assistant'"></i>
+          </div>
+          
+          <div class="message-content">
+            <!-- Mode normal -->
+            <div *ngIf="editingMessageId !== message.id" class="message-text">
+              {{ message.content }}
+            </div>
+            
+            <!-- Mode édition -->
+            <div *ngIf="editingMessageId === message.id" class="message-edit">
+              <textarea 
+                [(ngModel)]="editingText"
+                (keydown)="onEditKeyDown($event)"
+                class="edit-textarea"
+                rows="3">
+              </textarea>
+              <div class="edit-actions">
+                <button class="save-btn" (click)="saveEditMessage()">
+                  <i class="fas fa-check"></i>
+                  Sauver
+                </button>
+                <button class="cancel-btn" (click)="cancelEditMessage()">
+                  <i class="fas fa-times"></i>
+                  Annuler
+                </button>
+              </div>
+            </div>
+            
+            <!-- Actions du message -->
+            <div class="message-actions" *ngIf="message.role === 'user' && editingMessageId !== message.id">
+              <button class="edit-btn" (click)="startEditMessage(message)" title="Modifier">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="message-time">
+            {{ formatChatDate(message.created_at) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zone de saisie -->
+  <div class="chat-input-zone">
+    
+    <!-- Indicateur de frappe -->
+    <div class="typing-indicator" *ngIf="isTyping">
+      <div class="typing-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <span>L'assistant réfléchit...</span>
+    </div>
+
+    <!-- Formulaire de message -->
+    <form (ngSubmit)="sendMessage()" class="message-form">
+      <div class="input-container">
+        <textarea
+          [(ngModel)]="messageText"
+          name="message"
+          placeholder="Tapez votre message ici... (Entrée pour envoyer)"
+          rows="1"
+          maxlength="2000"
+          [disabled]="isInputDisabled"
+          (keydown)="onKeyDown($event)"
+          #messageInput
+          class="message-input">
+        </textarea>
+        
+        <button
+          type="submit"
+          class="send-btn"
+          [disabled]="!canSendButton"
+          [class.sending]="isTyping"
+          title="Envoyer le message">
+          <i class="fas fa-paper-plane" *ngIf="!isTyping"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="isTyping"></i>
+        </button>
+      </div>
+      
+      <div class="input-footer">
+        <span class="char-counter" [class.warning]="messageText.length > 1800">
+          {{ messageText.length }}/2000
+        </span>
+        <span class="input-hint">Entrée pour envoyer • Shift+Entrée pour nouvelle ligne</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Bouton flottant pour ouvrir le chat -->
+<button class="chat-toggle-btn" 
+        *ngIf="isAuthenticated && isClient && !isChatVisible"
+        (click)="showChat()"
+        title="Ouvrir le chat">
+  <i class="fas fa-comments"></i>
+  <span class="chat-badge" *ngIf="hasChats">{{ chats.length }}</span>
+</button>

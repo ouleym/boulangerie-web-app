@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractContro
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,7 @@ import { AuthService } from '../../core/auth.service';
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   message: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -52,42 +54,81 @@ export class RegisterComponent implements OnInit {
   }
 
   register(): void {
+    // Réinitialiser le message d'erreur
+    this.message = '';
+    
     if (this.registerForm.valid) {
-      const formData = this.registerForm.value;
+      this.isLoading = true;
       
-      // Suppression de password_confirmation avant envoi
-      delete formData.password_confirmation;
+      // Préparer les données à envoyer
+      const formData = { ...this.registerForm.value };
+      
+      // S'assurer que password_confirmation est présent
+      if (!formData.password_confirmation) {
+        formData.password_confirmation = formData.password;
+      }
 
+      console.log('Données envoyées:', formData); // Debug
+  
       this.authService.register(formData).subscribe({
         next: (response) => {
+          this.isLoading = false;
           console.log('Inscription réussie:', response);
-          // Redirection vers le dashboard ou page de confirmation
-          this.router.navigate(['/dashboard']);
-        },
-        error: (error) => {
-          console.error('Erreur d\'inscription:', error);
+          this.message = 'Inscription réussie ! Redirection en cours...';
           
-          if (error.status === 422) {
-            // Erreurs de validation Laravel
-            const errors = error.error.errors || error.error.message;
-            if (typeof errors === 'object') {
-              const errorMessages = Object.values(errors).flat();
-              this.message = errorMessages.join(', ');
-            } else {
-              this.message = errors || 'Erreur de validation des données';
-            }
-          } else if (error.status === 409) {
-            this.message = 'Cette adresse email est déjà utilisée';
-          } else if (error.status === 0) {
-            this.message = 'Impossible de contacter le serveur. Vérifiez votre connexion.';
-          } else {
-            this.message = error.error?.message || 'Une erreur est survenue lors de l\'inscription';
-          }
+          // Redirection après un court délai pour que l'utilisateur voie le message
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 1500);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isLoading = false;
+          console.error('Erreur complète:', error); // Debug complet
+          this.handleRegistrationError(error);
         }
       });
     } else {
       this.message = 'Veuillez corriger les erreurs dans le formulaire';
       this.markFormGroupTouched();
+    }
+  }
+
+  private handleRegistrationError(error: HttpErrorResponse): void {
+    console.log('Status:', error.status);
+    console.log('Error body:', error.error);
+    
+    switch (error.status) {
+      case 422:
+        // Erreurs de validation Laravel
+        if (error.error?.errors) {
+          const errors = error.error.errors;
+          const errorMessages = Object.entries(errors)
+            .map(([field, messages]: [string, any]) => {
+              const fieldMessages = Array.isArray(messages) ? messages : [messages];
+              return `${field}: ${fieldMessages.join(', ')}`;
+            });
+          this.message = errorMessages.join(' | ');
+        } else if (error.error?.message) {
+          this.message = error.error.message;
+        } else {
+          this.message = 'Erreur de validation des données';
+        }
+        break;
+        
+      case 409:
+        this.message = 'Cette adresse email est déjà utilisée';
+        break;
+        
+      case 500:
+        this.message = 'Erreur serveur. Veuillez réessayer plus tard.';
+        break;
+        
+      case 0:
+        this.message = 'Impossible de contacter le serveur. Vérifiez votre connexion internet.';
+        break;
+        
+      default:
+        this.message = error.error?.message || `Erreur ${error.status}: ${error.statusText}`;
     }
   }
 
@@ -120,5 +161,9 @@ export class RegisterComponent implements OnInit {
     }
     
     return '';
+  }
+
+  login(): void {
+    this.router.navigate(['/login']);
   }
 }
