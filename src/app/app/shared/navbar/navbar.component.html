@@ -2,8 +2,8 @@
   <div class="container-fluid">
 
     <!-- Logo + Titre -->
-    <a class="navbar-brand d-flex align-items-center">
-  <i class="fas fa-bread-slice brand-icon"></i>   <!-- 🍞 Icône pain -->
+    <a class="navbar-brand d-flex align-items-center" [routerLink]="dashboardRoute">
+      <i class="fas fa-bread-slice brand-icon"></i>
       <span>Boulangerie Hi-Tech</span>
     </a>
 
@@ -15,26 +15,103 @@
     <!-- Liens -->
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/produits" routerLinkActive="active">Produits</a>
+        
+        <!-- LIENS CLIENTS -->
+        <li class="nav-item" *ngIf="isClient">
+          <a class="nav-link" routerLink="/produits" routerLinkActive="active">
+            <i class="fas fa-bread-slice"></i> Produits
+          </a>
         </li>
         <li class="nav-item" *ngIf="isClient">
-          <a class="nav-link" routerLink="/mes-commandes" routerLinkActive="active">Mes Commandes</a>
+          <a class="nav-link" routerLink="/mes-commandes" routerLinkActive="active">
+            <i class="fas fa-shopping-bag"></i> Mes Commandes
+          </a>
         </li>
         <li class="nav-item" *ngIf="isClient">
           <a class="nav-link" routerLink="/panier" routerLinkActive="active">
-            Panier
-            <span *ngIf="panierCount > 0" class="badge">{{ panierCount }}</span>
+            <i class="fas fa-shopping-cart"></i> Mon Panier
+            <span *ngIf="panierCount > 0" class="badge bg-danger ms-1">{{ panierCount }}</span>
+          </a>
+        </li>
+        
+        <!-- LIENS EMPLOYÉS -->
+        <li class="nav-item dropdown" *ngIf="isEmploye">
+          
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/employe/produits">
+              <i class="fas fa-bread-slice"></i> Produits
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/employe/commandes">
+              <i class="fas fa-shopping-bag"></i> Commandes
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/employe/categories">
+              <i class="fas fa-tags"></i> Catégories
+            </a></li>
+          </ul>
+        </li>
+        
+        <!-- LIENS ADMIN -->
+        <li class="nav-item dropdown" *ngIf="isAdmin">
+          <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-cog"></i> Administration
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/admin/statistics">
+              <i class="fas fa-chart-bar"></i> Statistiques
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" routerLink="/admin/users">
+              <i class="fas fa-users"></i> Utilisateurs
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><h6 class="dropdown-header">Supervision</h6></li>
+            <li><a class="dropdown-item" routerLink="/admin/supervision/produits">
+              <i class="fas fa-bread-slice"></i> Produits
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/admin/supervision/commandes">
+              <i class="fas fa-shopping-bag"></i> Commandes
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/admin/supervision/categories">
+              <i class="fas fa-tags"></i> Catégories
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/admin/promotions">
+              <i class="fas fa-percent"></i> Promotions
+            </a></li>
+          </ul>
+        </li>
+
+        <!-- SUPPORT CHAT (Tous) -->
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/chat" routerLinkActive="active">
+            <i class="fas fa-comments"></i> Support
           </a>
         </li>
       </ul>
 
-      <!-- Déconnexion -->
+      <!-- Profil et Déconnexion -->
       <ul class="navbar-nav">
-        <li>
-          <button class="dropdown-item text-danger" (click)="logout()" type="button">
-            Déconnexion
-          </button>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+            <div class="user-avatar me-2">{{ userInitials }}</div>
+            <div class="user-info d-none d-lg-block">
+              <div class="user-name">{{ userDisplayName }}</div>
+              <div class="user-role">{{ userRoleDisplay }}</div>
+            </div>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" routerLink="/profile">
+              <i class="fas fa-user"></i> Mon Profil
+            </a></li>
+            <li><a class="dropdown-item" [routerLink]="dashboardRoute">
+              <i class="fas fa-tachometer-alt"></i> Tableau de bord
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <button class="dropdown-item text-danger" (click)="logout()" type="button">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+              </button>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>

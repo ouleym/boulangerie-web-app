@@ -15,7 +15,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   userRoles: string[] = [];
   panierCount = 0;
-  brandTitle = 'Boulangerie';
+  brandTitle = 'Boulangerie Hi-Tech';
   dashboardRoute = '/dashboard';
   userInitials = '';
   userDisplayName = '';
@@ -45,7 +45,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.userRoles = this.authService.getUserRoles();
     const decoded = this.authService.getDecodedToken();
     
-    console.log('Rôles de l\'utilisateur:', this.userRoles); // Debug
+    console.log('Rôles de l\'utilisateur:', this.userRoles);
     
     if (decoded) {
       this.userDisplayName = decoded.nom || decoded.email || 'Utilisateur';
@@ -76,11 +76,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const roleLabels: { [key: string]: string } = {
       'Admin': 'Administrateur',
       'Employe': 'Employé', 
-      'Client': 'Client',
-      // Support pour les minuscules aussi
-      'admin': 'Administrateur',
-      'employe': 'Employé',
-      'client': 'Client'
+      'Client': 'Client'
     };
     
     return roles
@@ -89,7 +85,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private setDashboardRoute(): void {
-    // ✅ CORRECTION : Utiliser les noms de rôles avec majuscule comme dans les routes
     if (this.userRoles.includes('Admin')) {
       this.dashboardRoute = '/dashboard/admin';
     } else if (this.userRoles.includes('Employe')) {
@@ -97,21 +92,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
     } else if (this.userRoles.includes('Client')) {
       this.dashboardRoute = '/dashboard/client';
     } else {
-      this.dashboardRoute = '/dashboard/client'; // Par défaut
+      this.dashboardRoute = '/dashboard/client';
     }
   }
 
-  // ✅ CORRECTION : Getters avec les bons noms de rôles
+  // Getters pour les rôles
   get isClient(): boolean {
     return this.userRoles.includes('Client');
   }
 
-  get isEmployeOrAdmin(): boolean {
-    return this.userRoles.includes('Employe') || this.userRoles.includes('Admin');
+  get isEmploye(): boolean {
+    return this.userRoles.includes('Employe');
   }
 
   get isAdmin(): boolean {
     return this.userRoles.includes('Admin');
+  }
+
+  get isEmployeOrAdmin(): boolean {
+    return this.userRoles.includes('Employe') || this.userRoles.includes('Admin');
   }
 
   logout() {

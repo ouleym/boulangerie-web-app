@@ -31,14 +31,12 @@ export const routes: Routes = [
   // ROUTES PUBLIQUES
   // ============================================
   
-  // Redirection par défaut
   { 
     path: '', 
     redirectTo: '/login', 
     pathMatch: 'full' 
   },
 
-  // Routes publiques d'authentification
   { 
     path: 'login', 
     component: LoginComponent, 
@@ -51,28 +49,9 @@ export const routes: Routes = [
   },
 
   // ============================================
-  // ROUTES CHAT PRINCIPALES (Tous les rôles)
-  // ============================================
-  {
-    path: 'chat',
-    component: ChatComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Client', 'Employe', 'Admin'] },
-    title: 'Chat Support'
-  },
-  {
-    path: 'chat/:id',
-    component: ChatComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Client', 'Employe', 'Admin'] },
-    title: 'Conversation Chat'
-  },
-
-  // ============================================
   // DASHBOARDS PAR RÔLE
   // ============================================
 
-  // Dashboard CLIENT
   {
     path: 'dashboard/client',
     component: ClientComponent,
@@ -81,7 +60,6 @@ export const routes: Routes = [
     title: 'Tableau de bord Client'
   },
 
-  // Dashboard EMPLOYÉ
   {
     path: 'dashboard/employe',
     component: EmployeComponent,
@@ -90,13 +68,12 @@ export const routes: Routes = [
     title: 'Tableau de bord Employé'
   },
 
-  // Dashboard ADMIN
   {
     path: 'dashboard/admin',
     component: AdminComponent,
     canActivate: [authGuard, roleGuard],
     data: { roles: ['Admin'] },
-    title: 'Tableau de bord Admin'
+    title: 'Tableau de bord Admin - Statistiques'
   },
 
   // ============================================
@@ -111,8 +88,10 @@ export const routes: Routes = [
   },
 
   // ============================================
-  // PRODUITS (Consultation - Tous les rôles)
+  // PRODUITS - Accès selon les rôles
   // ============================================
+  
+  // Consultation produits (Tous les rôles)
   {
     path: 'produits',
     canActivate: [authGuard, roleGuard],
@@ -131,11 +110,40 @@ export const routes: Routes = [
     ]
   },
 
+  // Gestion produits (Employé seulement)
+  {
+    path: 'employe/produits',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Employe'] },
+    children: [
+      { 
+        path: '', 
+        component: ProduitsListComponent, 
+        title: 'Gestion Produits - Employé' 
+      },
+      { 
+        path: 'create', 
+        component: ProduitsFormComponent, 
+        title: 'Créer Produit' 
+      },
+      { 
+        path: ':id/edit', 
+        component: ProduitsFormComponent, 
+        title: 'Modifier Produit' 
+      },
+      { 
+        path: ':id', 
+        component: ProduitsDetailComponent, 
+        title: 'Détail Produit' 
+      }
+    ]
+  },
+
   // ============================================
-  // COMMANDES CLIENT
+  // COMMANDES - Accès selon les rôles
   // ============================================
   
-  // Mes commandes (Client uniquement)
+  // Commandes clients (Client seulement)
   {
     path: 'mes-commandes',
     canActivate: [authGuard, roleGuard],
@@ -159,7 +167,31 @@ export const routes: Routes = [
     ]
   },
 
-  // Panier (Client uniquement)
+  // Gestion commandes (Employé seulement)
+  {
+    path: 'employe/commandes',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Employe'] },
+    children: [
+      { 
+        path: '', 
+        component: CommandesListComponent, 
+        title: 'Gestion Commandes - Employé' 
+      },
+      { 
+        path: ':id', 
+        component: CommandesDetailComponent, 
+        title: 'Détail Commande' 
+      },
+      { 
+        path: ':id/status', 
+        component: CommandesStatusComponent, 
+        title: 'Modifier Statut' 
+      }
+    ]
+  },
+
+  // Panier et checkout (Client seulement)
   {
     path: 'panier',
     component: CommandesPanierComponent,
@@ -168,7 +200,6 @@ export const routes: Routes = [
     title: 'Mon Panier'
   },
 
-  // Checkout (Client uniquement)
   {
     path: 'checkout',
     component: CommandesCheckoutComponent,
@@ -178,88 +209,19 @@ export const routes: Routes = [
   },
 
   // ============================================
-  // SUPPORT CLIENT (Tous les rôles)
+  // CATÉGORIES - Accès selon les rôles
   // ============================================
-  {
-    path: 'support',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Client', 'Employe', 'Admin'] },
-    children: [
-      { 
-        path: 'chat', 
-        component: ChatComponent, 
-        title: 'Chat Support' 
-      },
-      { 
-        path: 'chat/:id', 
-        component: ChatComponent, 
-        title: 'Conversation Support'
-      },
-      { 
-        path: 'conversation/:id', 
-        component: MessagesComponent, 
-        title: 'Messages Support' 
-      }
-    ]
-  },
-
-  // ============================================
-  // GESTION EMPLOYÉ (Employé + Admin)
-  // ============================================
-
-  // Gestion des produits pour employés
-  {
-    path: 'employe/produits',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Employe', 'Admin'] },
-    children: [
-      { 
-        path: '', 
-        component: ProduitsListComponent, 
-        title: 'Gestion Produits' 
-      },
-      { 
-        path: 'create', 
-        component: ProduitsFormComponent, 
-        title: 'Créer Produit' 
-      },
-      { 
-        path: ':id/edit', 
-        component: ProduitsFormComponent, 
-        title: 'Modifier Produit' 
-      }
-    ]
-  },
-
-  // Gestion des commandes pour employés
-  {
-    path: 'employe/commandes',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Employe', 'Admin'] },
-    children: [
-      { 
-        path: '', 
-        component: CommandesListComponent, 
-        title: 'Toutes les Commandes' 
-      },
-      { 
-        path: ':id', 
-        component: CommandesDetailComponent, 
-        title: 'Détail Commande' 
-      }
-    ]
-  },
-
-  // Gestion des catégories pour employés
+  
+  // Gestion catégories (Employé seulement)
   {
     path: 'employe/categories',
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['Employe', 'Admin'] },
+    data: { roles: ['Employe'] },
     children: [
       { 
         path: '', 
         component: CategoriesListComponent, 
-        title: 'Gestion Catégories' 
+        title: 'Gestion Catégories - Employé' 
       },
       { 
         path: 'create', 
@@ -270,6 +232,11 @@ export const routes: Routes = [
         path: ':id/edit', 
         component: CategoriesFormComponent, 
         title: 'Modifier Catégorie' 
+      },
+      { 
+        path: ':id', 
+        component: CategoriesDetailComponent, 
+        title: 'Détail Catégorie' 
       }
     ]
   },
@@ -277,27 +244,25 @@ export const routes: Routes = [
   // ============================================
   // ADMINISTRATION (Admin uniquement)
   // ============================================
-
-  // Section Administration principale
   {
     path: 'admin',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['Admin'] },
     title: 'Administration',
     children: [
-      // Dashboard admin (redirection par défaut)
+      // Dashboard statistiques (redirection par défaut)
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'statistics',
         pathMatch: 'full'
       },
       {
-        path: 'dashboard',
+        path: 'statistics',
         component: AdminComponent,
-        title: 'Dashboard Admin'
+        title: 'Statistiques de la Boulangerie'
       },
 
-      // ========== GESTION UTILISATEURS ==========
+      // ========== GESTION UTILISATEURS (Admin seulement) ==========
       {
         path: 'users',
         children: [
@@ -319,61 +284,64 @@ export const routes: Routes = [
         ]
       },
 
-      // ========== GESTION CATÉGORIES ==========
+      // ========== SUPERVISION GÉNÉRALE (Admin) ==========
       {
-        path: 'categories',
+        path: 'supervision',
         children: [
-          { 
-            path: '', 
-            component: CategoriesListComponent, 
-            title: 'Admin - Gestion Catégories' 
+          // Vue d'ensemble de tous les produits
+          {
+            path: 'produits',
+            children: [
+              { 
+                path: '', 
+                component: ProduitsListComponent, 
+                title: 'Admin - Supervision Produits' 
+              },
+              { 
+                path: ':id', 
+                component: ProduitsDetailComponent, 
+                title: 'Admin - Détail Produit' 
+              }
+            ]
           },
-          { 
-            path: 'create', 
-            component: CategoriesFormComponent, 
-            title: 'Admin - Créer Catégorie' 
+          
+          // Vue d'ensemble de toutes les commandes
+          {
+            path: 'commandes',
+            children: [
+              { 
+                path: '', 
+                component: CommandesListComponent, 
+                title: 'Admin - Supervision Commandes' 
+              },
+              { 
+                path: ':id', 
+                component: CommandesDetailComponent, 
+                title: 'Admin - Détail Commande' 
+              }
+            ]
           },
-          { 
-            path: ':id', 
-            component: CategoriesDetailComponent, 
-            title: 'Admin - Détail Catégorie' 
-          },
-          { 
-            path: ':id/edit', 
-            component: CategoriesFormComponent, 
-            title: 'Admin - Modifier Catégorie' 
+
+          // Vue d'ensemble de toutes les catégories
+          {
+            path: 'categories',
+            children: [
+              { 
+                path: '', 
+                component: CategoriesListComponent, 
+                title: 'Admin - Supervision Catégories' 
+              },
+              { 
+                path: ':id', 
+                component: CategoriesDetailComponent, 
+                title: 'Admin - Détail Catégorie' 
+              }
+            ]
           }
         ]
       },
 
-      // ========== GESTION PRODUITS ==========
-      {
-        path: 'produits',
-        children: [
-          { 
-            path: '', 
-            component: ProduitsListComponent, 
-            title: 'Admin - Tous les Produits' 
-          },
-          { 
-            path: 'create', 
-            component: ProduitsFormComponent, 
-            title: 'Admin - Créer Produit' 
-          },
-          { 
-            path: ':id', 
-            component: ProduitsDetailComponent, 
-            title: 'Admin - Détail Produit' 
-          },
-          { 
-            path: ':id/edit', 
-            component: ProduitsFormComponent, 
-            title: 'Admin - Modifier Produit' 
-          }
-        ]
-      },
-
-      // ========== GESTION PROMOTIONS ==========
+      // ========== GESTION PROMOTIONS (Admin) ==========
       {
         path: 'promotions',
         children: [
@@ -400,36 +368,24 @@ export const routes: Routes = [
         ]
       },
 
-      // ========== GESTION COMMANDES ==========
-      {
-        path: 'commandes',
-        children: [
-          { 
-            path: '', 
-            component: CommandesListComponent, 
-            title: 'Admin - Toutes les Commandes' 
-          },
-          { 
-            path: ':id', 
-            component: CommandesDetailComponent, 
-            title: 'Admin - Détail Commande' 
-          }
-        ]
-      },
-
-      // ========== GESTION CHAT SUPPORT ==========
+      // ========== SUPPORT CHAT (Admin) ==========
       {
         path: 'support',
         children: [
           { 
             path: 'chat', 
             component: ChatComponent, 
-            title: 'Admin - Gestion Chat Support' 
+            title: 'Admin - Gestion Support' 
           },
           { 
             path: 'chat/:id', 
             component: ChatComponent, 
             title: 'Admin - Conversation Support'
+          },
+          { 
+            path: 'messages', 
+            component: MessagesComponent, 
+            title: 'Admin - Tous les Messages' 
           }
         ]
       }
@@ -437,10 +393,52 @@ export const routes: Routes = [
   },
 
   // ============================================
-  // ROUTES D'ACCÈS RAPIDE PAR RÔLE
+  // SUPPORT CLIENT
+  // ============================================
+  {
+    path: 'chat',
+    component: ChatComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Client', 'Employe', 'Admin'] },
+    title: 'Chat Support'
+  },
+  {
+    path: 'chat/:id',
+    component: ChatComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Client', 'Employe', 'Admin'] },
+    title: 'Conversation Chat'
+  },
+
+  // Support pour clients
+  {
+    path: 'support',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Client'] },
+    children: [
+      { 
+        path: 'chat', 
+        component: ChatComponent, 
+        title: 'Chat Support' 
+      },
+      { 
+        path: 'chat/:id', 
+        component: ChatComponent, 
+        title: 'Conversation Support'
+      },
+      { 
+        path: 'conversation/:id', 
+        component: MessagesComponent, 
+        title: 'Messages Support' 
+      }
+    ]
+  },
+
+  // ============================================
+  // ROUTES D'ACCÈS RAPIDE
   // ============================================
 
-  // Raccourcis pour les employés (accès direct sans préfixe employe/)
+  // Raccourcis pour les employés
   {
     path: 'gestion-produits',
     redirectTo: '/employe/produits',
@@ -457,14 +455,19 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
-  // Raccourcis pour l'administration (accès direct)
+  // Raccourcis pour l'administration
   {
     path: 'administration',
-    redirectTo: '/admin/dashboard',
+    redirectTo: '/admin/statistics',
+    pathMatch: 'full'
+  },
+  {
+    path: 'statistiques',
+    redirectTo: '/admin/statistics',
     pathMatch: 'full'
   },
 
-  // Route 404 - Redirection vers /chat si connecté, sinon /login
+  // Route 404
   { 
     path: '**', 
     redirectTo: '/login'

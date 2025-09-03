@@ -1,0 +1,563 @@
+<div class="admin-stats-container">
+  <!-- En-tête avec contrôles -->
+  <div class="stats-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="stats-title">
+          <i class="fas fa-chart-line me-3"></i>
+          Tableau de Bord Statistiques
+        </h1>
+        <p class="stats-subtitle">Analysez les performances de votre boulangerie</p>
+      </div>
+      
+      <div class="stats-controls">
+        <select 
+          class="form-select me-3" 
+          [(ngModel)]="selectedPeriod" 
+          (change)="onPeriodChange()"
+          style="width: auto; display: inline-block;">
+          <option *ngFor="let option of periodOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+        
+        <div class="row g-4 mt-2">
+          <!-- Ventes mensuelles -->
+          <div class="col-12">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h5 class="chart-title">
+                  <i class="fas fa-calendar me-2"></i>
+                  Ventes Mensuelles
+                </h5>
+              </div>
+              <div class="chart-body">
+                <canvas 
+                  #monthlySalesChartCanvas 
+                  class="chart-canvas"
+                  [attr.data-chart]="'monthly'"
+                  [attr.data-chart-data]="monthlySalesChart | json">
+                </canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglet Produits -->
+      <div *ngIf="activeTab === 'products'" class="tab-pane-active">
+        <div class="row g-4">
+          <!-- Graphique top produits -->
+          <div class="col-lg-8">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h5 class="chart-title">
+                  <i class="fas fa-medal me-2"></i>
+                  Top 10 des Produits les Plus Vendus
+                </h5>
+              </div>
+              <div class="chart-body">
+                <canvas 
+                  #topProductsChartCanvas 
+                  class="chart-canvas"
+                  [attr.data-chart]="'topProducts'"
+                  [attr.data-chart-data]="topProductsChart | json">
+                </canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tableau détaillé -->
+          <div class="col-lg-4">
+            <div class="table-card">
+              <div class="table-header">
+                <h5 class="table-title">
+                  <i class="fas fa-list me-2"></i>
+                  Détails des Ventes
+                </h5>
+              </div>
+              <div class="table-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Produit</th>
+                        <th>Qté</th>
+                        <th>CA</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let product of topProducts; let i = index">
+                        <td>
+                          <div class="product-name">
+                            <span class="rank-badge">{{ i + 1 }}</span>
+                            {{ product.productName }}
+                          </div>
+                        </td>
+                        <td class="fw-bold">{{ formatNumber(product.quantity) }}</td>
+                        <td class="text-success fw-bold">{{ formatCurrency(product.revenue) }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performances produits -->
+        <div class="row g-4 mt-2">
+          <div class="col-12">
+            <div class="performance-grid">
+              <div class="performance-header">
+                <h5>
+                  <i class="fas fa-trophy me-2"></i>
+                  Performance des Produits
+                </h5>
+              </div>
+              <div class="performance-items">
+                <div 
+                  *ngFor="let product of topProducts.slice(0, 5)" 
+                  class="performance-item">
+                  <div class="performance-product">
+                    <div class="product-info">
+                      <h6>{{ product.productName }}</h6>
+                      <span class="product-stats">
+                        {{ formatNumber(product.quantity) }} vendus • {{ formatCurrency(product.revenue) }}
+                      </span>
+                    </div>
+                    <div class="performance-bar">
+                      <div class="progress">
+                        <div 
+                          class="progress-bar" 
+                          [style.width.%]="product.percentage"
+                          [attr.aria-valuenow]="product.percentage">
+                        </div>
+                      </div>
+                      <span class="percentage">{{ product.percentage.toFixed(1) }}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglet Catégories -->
+      <div *ngIf="activeTab === 'categories'" class="tab-pane-active">
+        <div class="row g-4">
+          <!-- Graphique catégories (Doughnut) -->
+          <div class="col-lg-6">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h5 class="chart-title">
+                  <i class="fas fa-chart-pie me-2"></i>
+                  Répartition par Catégorie
+                </h5>
+              </div>
+              <div class="chart-body">
+                <canvas 
+                  #categoryChartCanvas 
+                  class="chart-canvas"
+                  [attr.data-chart]="'category'"
+                  [attr.data-chart-data]="categoryChart | json">
+                </canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistiques détaillées -->
+          <div class="col-lg-6">
+            <div class="category-stats">
+              <div class="category-header">
+                <h5>
+                  <i class="fas fa-analytics me-2"></i>
+                  Analyse par Catégorie
+                </h5>
+              </div>
+              <div class="category-list">
+                <div *ngFor="let category of categoryStats; let i = index" class="category-item">
+                  <div class="category-info">
+                    <div class="category-name">
+                      <div class="category-color" [style.background-color]="getCategoryColor(i)"></div>
+                      <span>{{ category.categoryName }}</span>
+                    </div>
+                    <div class="category-metrics">
+                      <div class="metric">
+                        <span class="metric-label">Ventes:</span>
+                        <span class="metric-value">{{ formatNumber(category.sales) }}</span>
+                      </div>
+                      <div class="metric">
+                        <span class="metric-label">CA:</span>
+                        <span class="metric-value text-success">{{ formatCurrency(category.amount) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglet Analyse temporelle -->
+      <div *ngIf="activeTab === 'temporal'" class="tab-pane-active">
+        <div class="row g-4">
+          <!-- Ventes par heure détaillées -->
+          <div class="col-lg-8">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h5 class="chart-title">
+                  <i class="fas fa-clock me-2"></i>
+                  Analyse des Ventes par Tranche Horaire
+                </h5>
+              </div>
+              <div class="chart-body">
+                <canvas 
+                  #hourlyDetailChartCanvas 
+                  class="chart-canvas"
+                  [attr.data-chart]="'hourlyDetail'"
+                  [attr.data-chart-data]="hourlyChart | json">
+                </canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Insights temporels -->
+          <div class="col-lg-4">
+            <div class="insights-card">
+              <div class="insights-header">
+                <h5>
+                  <i class="fas fa-lightbulb me-2"></i>
+                  Insights Temporels
+                </h5>
+              </div>
+              <div class="insights-body">
+                <div class="insight-item">
+                  <div class="insight-icon success">
+                    <i class="fas fa-arrow-up"></i>
+                  </div>
+                  <div class="insight-content">
+                    <h6>Pic de fréquentation</h6>
+                    <p>12h-13h avec 55 ventes/heure</p>
+                  </div>
+                </div>
+
+                <div class="insight-item">
+                  <div class="insight-icon info">
+                    <i class="fas fa-coffee"></i>
+                  </div>
+                  <div class="insight-content">
+                    <h6>Rush matinal</h6>
+                    <p>8h-9h: 45 ventes (viennoiseries)</p>
+                  </div>
+                </div>
+
+                <div class="insight-item">
+                  <div class="insight-icon warning">
+                    <i class="fas fa-moon"></i>
+                  </div>
+                  <div class="insight-content">
+                    <h6>Fin de journée</h6>
+                    <p>Baisse après 18h: -60%</p>
+                  </div>
+                </div>
+
+                <div class="insight-item">
+                  <div class="insight-icon primary">
+                    <i class="fas fa-calendar-week"></i>
+                  </div>
+                  <div class="insight-content">
+                    <h6>Jours de pointe</h6>
+                    <p>Sam-Dim: +35% vs semaine</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline des ventes -->
+        <div class="row g-4 mt-2">
+          <div class="col-12">
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <h5>
+                  <i class="fas fa-timeline me-2"></i>
+                  Évolution Hebdomadaire
+                </h5>
+              </div>
+              <div class="timeline-body">
+                <div class="sales-timeline">
+                  <div *ngFor="let day of getWeeklyData()" class="timeline-day">
+                    <div class="day-header">
+                      <span class="day-name">{{ day.name }}</span>
+                      <span class="day-date">{{ day.date }}</span>
+                    </div>
+                    <div class="day-stats">
+                      <div class="stat-item">
+                        <span class="stat-value">{{ day.sales }}</span>
+                        <span class="stat-label">ventes</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-value">{{ formatCurrency(day.amount) }}</span>
+                        <span class="stat-label">CA</span>
+                      </div>
+                    </div>
+                    <div class="day-progress">
+                      <div class="progress">
+                        <div 
+                          class="progress-bar" 
+                          [style.width.%]="day.percentage">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>btn-group">
+
+          <button class="btn btn-outline-primary" (click)="exportStatistics('csv')">
+            <i class="fas fa-file-csv me-2"></i>CSV
+          </button>
+          <button class="btn btn-outline-success" (click)="exportStatistics('excel')">
+            <i class="fas fa-file-excel me-2"></i>Excel
+          </button>
+  
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!isLoading">
+    
+    <!-- Résumé des statistiques principales -->
+    <div class="stats-summary-cards mb-4">
+      <div class="row g-4" *ngIf="statsSummary">
+        <div class="col-xl-2 col-lg-4 col-md-6">
+          <div class="stats-card sales-card">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-shopping-bag"></i>
+              </div>
+              <div class="stats-content">
+                <h3 class="stats-number">{{ formatNumber(statsSummary.totalSales) }}</h3>
+                <p class="stats-label">Total Ventes</p>
+                <span class="stats-growth" [ngClass]="getGrowthClass(statsSummary.growthPercentage)">
+                  <i [ngClass]="getGrowthIcon(statsSummary.growthPercentage)"></i>
+                  {{ formatPercentage(statsSummary.growthPercentage) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+          <div class="stats-card revenue-card">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-euro-sign"></i>
+              </div>
+              <div class="stats-content">
+                <h3 class="stats-number">{{ formatCurrency(statsSummary.totalRevenue) }}</h3>
+                <p class="stats-label">Chiffre d'Affaires</p>
+                <span class="stats-growth text-success">
+                  <i class="fas fa-arrow-up"></i>
+                  +8.3%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+          <div class="stats-card products-card">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-bread-slice"></i>
+              </div>
+              <div class="stats-content">
+                <h3 class="stats-number">{{ formatNumber(statsSummary.totalProducts) }}</h3>
+                <p class="stats-label">Produits Actifs</p>
+                <span class="stats-growth text-info">
+                  <i class="fas fa-plus"></i>
+                  5 nouveaux
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+          <div class="stats-card customers-card">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stats-content">
+                <h3 class="stats-number">{{ formatNumber(statsSummary.totalCustomers) }}</h3>
+                <p class="stats-label">Clients</p>
+                <span class="stats-growth text-success">
+                  <i class="fas fa-arrow-up"></i>
+                  +15.2%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+          <div class="stats-card average-card">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-calculator"></i>
+              </div>
+              <div class="stats-content">
+                <h3 class="stats-number">{{ formatCurrency(statsSummary.averageOrderValue) }}</h3>
+                <p class="stats-label">Panier Moyen</p>
+                <span class="stats-growth text-success">
+                  <i class="fas fa-arrow-up"></i>
+                  +5.8%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2 col-lg-4 col-md-6">
+          <div class="stats-card growth-card">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="stats-content">
+                <h3 class="stats-number">{{ formatPercentage(statsSummary.growthPercentage) }}</h3>
+                <p class="stats-label">Croissance</p>
+                <span class="stats-growth" [ngClass]="getGrowthClass(statsSummary.growthPercentage)">
+                  vs mois dernier
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation par onglets -->
+    <ul class="nav nav-pills stats-tabs mb-4">
+      <li class="nav-item">
+        <button 
+          class="nav-link" 
+          [class.active]="activeTab === 'overview'"
+          (click)="onTabChange('overview')">
+          <i class="fas fa-chart-area me-2"></i>Vue d'ensemble
+        </button>
+      </li>
+      <li class="nav-item">
+        <button 
+          class="nav-link" 
+          [class.active]="activeTab === 'products'"
+          (click)="onTabChange('products')">
+          <i class="fas fa-bread-slice me-2"></i>Produits
+        </button>
+      </li>
+      <li class="nav-item">
+        <button 
+          class="nav-link" 
+          [class.active]="activeTab === 'categories'"
+          (click)="onTabChange('categories')">
+          <i class="fas fa-tags me-2"></i>Catégories
+        </button>
+      </li>
+      <li class="nav-item">
+        <button 
+          class="nav-link" 
+          [class.active]="activeTab === 'temporal'"
+          (click)="onTabChange('temporal')">
+          <i class="fas fa-clock me-2"></i>Analyse temporelle
+        </button>
+      </li>
+    </ul>
+
+    <!-- Contenu des onglets -->
+    <div class="tab-content">
+      
+      <!-- Onglet Vue d'ensemble -->
+      <div *ngIf="activeTab === 'overview'" class="tab-pane-active">
+        <div class="row g-4">
+          <!-- Graphique des ventes journalières -->
+          <div class="col-lg-8">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h5 class="chart-title">
+                  <i class="fas fa-calendar-day me-2"></i>
+                  Évolution des Ventes - {{ selectedPeriod }} derniers jours
+                </h5>
+              </div>
+              <div class="chart-body">
+                <canvas 
+                  #dailySalesChartCanvas 
+                  class="chart-canvas"
+                  [attr.data-chart]="'dailySales'"
+                  [attr.data-chart-data]="dailySalesChart | json">
+                </canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Répartition horaire -->
+          <div class="col-lg-4">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h5 class="chart-title">
+                  <i class="fas fa-clock me-2"></i>
+                  Ventes par Heure
+                </h5>
+              </div>
+              <div class="chart-body">
+                <canvas 
+                  #hourlyChartCanvas 
+                  class="chart-canvas"
+                  [attr.data-chart]="'hourly'"
+                  [attr.data-chart-data]="hourlyChart | json">
+                </canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                <div class="row g-4 mt-2">
+          <!-- Ventes mensuelles -->
+          <div class="col-12">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h5 class="chart-title">
+                  <i class="fas fa-calendar me-2"></i>
+                  Ventes Mensuelles
+                </h5>
+              </div>
+              <div class="chart-body">
+                <canvas 
+                  #monthlySalesChartCanvas 
+                  class="chart-canvas"
+                  [attr.data-chart]="'monthly'"
+                  [attr.data-chart-data]="monthlySalesChart | json">
+                </canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- fin tab-pane overview -->
+    </div> <!-- fin tab-content -->
+  </div> <!-- fin contenu principal -->

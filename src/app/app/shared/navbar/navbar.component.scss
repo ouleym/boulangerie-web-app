@@ -3,7 +3,7 @@
   backdrop-filter: blur(12px);
   border-radius: 18px;
   margin: 12px auto;
-  padding: 6px 20px;
+  padding: 20px 20px;
   max-width: 1300px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
@@ -13,8 +13,8 @@
     font-weight: 700;
     display: flex;
     align-items: center;
-    margin-right: 60px;
-    color: var(--bs-primary);   // ✅ couleur simple (bleu bootstrap)
+    margin-right:30px;
+    color: var(--bs-primary);   
     text-decoration: none;
 
     &:hover {
