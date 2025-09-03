@@ -9,15 +9,19 @@ class Message extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['conversation_id', 'sender_id', 'contenu'];
+    protected $fillable = [
+        'chat_id',
+        'role',
+        'content',
+        'meta',
+    ];
 
-    public function conversation()
-    {
-        return $this->belongsTo(Conversation::class);
-    }
+    protected $casts = [
+        'meta' => 'array',
+    ];
 
-    public function sender()
+    public function chat()
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(Chat::class);
     }
 }

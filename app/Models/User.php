@@ -61,4 +61,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->prenom . ' ' . $this->nom;
     }
+
+    public function chats(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Chat::class)->orderBy('updated_at', 'desc');
+    }
 }

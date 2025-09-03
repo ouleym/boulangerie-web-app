@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+        'organization' => env('OPENAI_ORGANIZATION', null),
+        'timeout' => env('OPENAI_REQUEST_TIMEOUT', 30),
+    ],
+
+
 ];
