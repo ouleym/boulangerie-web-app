@@ -101,7 +101,8 @@ return [
     |
     */
 
-    'ttl' => env('JWT_TTL', 60),
+    // CORRECTION: S'assurer que la valeur est castée en entier
+    'ttl' => (int) env('JWT_TTL', 60),
 
     /*
     |--------------------------------------------------------------------------
@@ -109,7 +110,6 @@ return [
     |--------------------------------------------------------------------------
     |
     | Specify the length of time (in minutes) that the token can be refreshed
-    | within. I.E. The user can refresh their token within a 2 week window of
     | the original token being created until they must re-authenticate.
     | Defaults to 2 weeks.
     |
@@ -120,7 +120,8 @@ return [
     |
     */
 
-    'refresh_ttl' => env('JWT_REFRESH_TTL', 20160),
+    // CORRECTION: S'assurer que la valeur est castée en entier
+    'refresh_ttl' => (int) env('JWT_REFRESH_TTL', 20160),
 
     /*
     |--------------------------------------------------------------------------
@@ -131,7 +132,7 @@ return [
     |
     */
 
-    'algo' => env('JWT_ALGO', Tymon\JWTAuth\Providers\JWT\Provider::ALGO_HS256),
+    'algo' => env('JWT_ALGO', 'HS256'),
 
     /*
     |--------------------------------------------------------------------------
@@ -205,7 +206,8 @@ return [
     |
     */
 
-    'leeway' => env('JWT_LEEWAY', 0),
+    // CORRECTION: S'assurer que la valeur est castée en entier
+    'leeway' => (int) env('JWT_LEEWAY', 0),
 
     /*
     |--------------------------------------------------------------------------
@@ -232,7 +234,8 @@ return [
     |
     */
 
-    'blacklist_grace_period' => env('JWT_BLACKLIST_GRACE_PERIOD', 0),
+    // CORRECTION: S'assurer que la valeur est castée en entier
+    'blacklist_grace_period' => (int) env('JWT_BLACKLIST_GRACE_PERIOD', 0),
 
     /*
     |--------------------------------------------------------------------------

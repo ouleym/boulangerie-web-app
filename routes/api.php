@@ -1,14 +1,14 @@
 <?php
+
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\{
     AuthController,
     CategorieController,
     CommandeController,
-    ConversationController,
     DashboardController,
     FactureController,
     LivraisonController,
-    MessageController,
     NotificationController,
     ProduitController,
     PromotionController,
@@ -35,24 +35,24 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResources([
         'categories'     => CategorieController::class,
         'commandes'      => CommandeController::class,
-        'conversations'  => ConversationController::class,
         'dashboard'      => DashboardController::class,
         'factures'       => FactureController::class,
         'livraisons'     => LivraisonController::class,
-        'messages'       => MessageController::class,
         'notifications'  => NotificationController::class,
         'produits'       => ProduitController::class,
         'promotions'     => PromotionController::class,
     ]);
 
+    Route::prefix('chats')->group(function () {
+        Route::get('/', [ChatController::class, 'index']);              // GET /api/chats
+        Route::post('/', [ChatController::class, 'store']);             // POST /api/chats
+        Route::get('/{chat}', [ChatController::class, 'show']);         // GET /api/chats/{id}
+        Route::post('/{chat}/messages', [ChatController::class, 'sendMessage']); // POST /api/chats/{id}/messages
+        Route::delete('/{chat}', [ChatController::class, 'destroy']);   // DELETE /api/chats/{id}
+    });
+
 });
 
-// ✅ Route de test publique (ex: healthcheck API)
-Route::get('/ping', function () {
-    return response()->json(['status' => 'API is working!']);
-});
-
-// ✅ Fallback pour 404
 Route::fallback(function () {
     return response()->json([
         'message' => 'Route non trouvée. Vérifie l’URL.'
