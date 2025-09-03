@@ -15,103 +15,52 @@
     <!-- Liens -->
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
-        
-        <!-- LIENS CLIENTS -->
+
+        <!-- CLIENT -->
         <li class="nav-item" *ngIf="isClient">
           <a class="nav-link" routerLink="/produits" routerLinkActive="active">
-            <i class="fas fa-bread-slice"></i> Produits
+            Produits
           </a>
         </li>
         <li class="nav-item" *ngIf="isClient">
           <a class="nav-link" routerLink="/mes-commandes" routerLinkActive="active">
-            <i class="fas fa-shopping-bag"></i> Mes Commandes
+            Mes Commandes
           </a>
         </li>
         <li class="nav-item" *ngIf="isClient">
           <a class="nav-link" routerLink="/panier" routerLinkActive="active">
-            <i class="fas fa-shopping-cart"></i> Mon Panier
+            Panier
             <span *ngIf="panierCount > 0" class="badge bg-danger ms-1">{{ panierCount }}</span>
           </a>
         </li>
-        
-        <!-- LIENS EMPLOYÉS -->
-        <li class="nav-item dropdown" *ngIf="isEmploye">
-          
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" routerLink="/employe/produits">
-              <i class="fas fa-bread-slice"></i> Produits
-            </a></li>
-            <li><a class="dropdown-item" routerLink="/employe/commandes">
-              <i class="fas fa-shopping-bag"></i> Commandes
-            </a></li>
-            <li><a class="dropdown-item" routerLink="/employe/categories">
-              <i class="fas fa-tags"></i> Catégories
-            </a></li>
-          </ul>
+
+        <!-- EMPLOYÉ -->
+        <li class="nav-item" *ngIf="isEmploye">
+          <a class="nav-link" routerLink="/employe/produits" routerLinkActive="active">Gestion Produits</a>
         </li>
-        
-        <!-- LIENS ADMIN -->
-        <li class="nav-item dropdown" *ngIf="isAdmin">
-          <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
-            <i class="fas fa-cog"></i> Administration
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" routerLink="/admin/statistics">
-              <i class="fas fa-chart-bar"></i> Statistiques
-            </a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" routerLink="/admin/users">
-              <i class="fas fa-users"></i> Utilisateurs
-            </a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><h6 class="dropdown-header">Supervision</h6></li>
-            <li><a class="dropdown-item" routerLink="/admin/supervision/produits">
-              <i class="fas fa-bread-slice"></i> Produits
-            </a></li>
-            <li><a class="dropdown-item" routerLink="/admin/supervision/commandes">
-              <i class="fas fa-shopping-bag"></i> Commandes
-            </a></li>
-            <li><a class="dropdown-item" routerLink="/admin/supervision/categories">
-              <i class="fas fa-tags"></i> Catégories
-            </a></li>
-            <li><a class="dropdown-item" routerLink="/admin/promotions">
-              <i class="fas fa-percent"></i> Promotions
-            </a></li>
-          </ul>
+        <li class="nav-item" *ngIf="isEmploye">
+          <a class="nav-link" routerLink="/employe/commandes" routerLinkActive="active">Gestion Commandes</a>
+        </li>
+        <li class="nav-item" *ngIf="isEmploye">
+          <a class="nav-link" routerLink="/employe/categories" routerLinkActive="active">Gestion Catégories</a>
         </li>
 
-        <!-- SUPPORT CHAT (Tous) -->
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/chat" routerLinkActive="active">
-            <i class="fas fa-comments"></i> Support
-          </a>
+        <!-- ADMIN -->
+        <li class="nav-item" *ngIf="isAdmin">
+          <a class="nav-link" routerLink="/admin/statistics" routerLinkActive="active">Statistiques</a>
         </li>
+        <li class="nav-item" *ngIf="isAdmin">
+          <a class="nav-link" routerLink="/admin/users" routerLinkActive="active">Utilisateurs</a>
+        </li>
+      
       </ul>
 
-      <!-- Profil et Déconnexion -->
+      <!-- Profil & Déconnexion -->
       <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-            <div class="user-avatar me-2">{{ userInitials }}</div>
-            <div class="user-info d-none d-lg-block">
-              <div class="user-name">{{ userDisplayName }}</div>
-              <div class="user-role">{{ userRoleDisplay }}</div>
-            </div>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" routerLink="/profile">
-              <i class="fas fa-user"></i> Mon Profil
-            </a></li>
-            <li><a class="dropdown-item" [routerLink]="dashboardRoute">
-              <i class="fas fa-tachometer-alt"></i> Tableau de bord
-            </a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <button class="dropdown-item text-danger" (click)="logout()" type="button">
-                <i class="fas fa-sign-out-alt"></i> Déconnexion
-              </button>
-            </li>
-          </ul>
+        <li class="nav-item">
+          <button class="btn btn-outline-danger" (click)="logout()" type="button">
+            Déconnexion
+          </button>
         </li>
       </ul>
     </div>

@@ -25,6 +25,7 @@ import { PromotionsDetailComponent } from './app/promotions/detail/detail.compon
 import { CategoriesListComponent } from './app/categories/list/list.component';
 import { CategoriesFormComponent } from './app/categories/form/form.component';
 import { CategoriesDetailComponent } from './app/categories/detail/detail.component';
+import { AdminStatsComponent } from './app/support/admin-stats/admin-stats.component';
 
 export const routes: Routes = [
   // ============================================
@@ -258,7 +259,7 @@ export const routes: Routes = [
       },
       {
         path: 'statistics',
-        component: AdminComponent,
+        component: AdminStatsComponent,
         title: 'Statistiques de la Boulangerie'
       },
 
