@@ -1,13 +1,15 @@
-<!-- app.component.html -->
 <div class="app-container">
-  <!-- Navbar en haut (seulement si connecté et pas sur login) -->
+  <!-- Navbar en haut -->
   <app-navbar *ngIf="!isLoginPage && isLoggedIn"></app-navbar>
-  
-  <!-- Le contenu principal (sans marge gauche maintenant) -->
+
+  <!-- Contenu -->
   <main class="main-content" [class.with-navbar]="!isLoginPage && isLoggedIn">
     <router-outlet></router-outlet>
   </main>
-  
-  <!-- Chat panel à droite (seulement si connecté et pas sur login) -->
+
+  <!-- Chat -->
   <app-chat *ngIf="!isLoginPage && isLoggedIn"></app-chat>
+
+  <!-- ✅ Footer doit être le dernier élément -->
+  <app-footer *ngIf="!isLoginPage && isLoggedIn"></app-footer>
 </div>

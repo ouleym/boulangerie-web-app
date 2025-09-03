@@ -1,1 +1,42 @@
-<p>footer works!</p>
+<footer class="modern-footer">
+  <div class="container">
+    <div class="row">
+
+      <!-- Logo & Nom -->
+      <div class="col-md-4 footer-brand">
+        <i class="fas fa-bread-slice footer-icon"></i>
+        <h5>Boulangerie Hi-Tech</h5>
+        <p>Le goût authentique du Sénégal, avec une touche moderne.</p>
+      </div>
+
+      <!-- Liens rapides -->
+      <div class="col-md-4 footer-links">
+        <h6>Liens utiles</h6>
+        <ul>
+          <li><a routerLink="/produits">Produits</a></li>
+          <li><a routerLink="/mes-commandes">Mes Commandes</a></li>
+          <li><a routerLink="/panier">Mon Panier</a></li>
+          <li><a routerLink="/profile">Mon Profil</a></li>
+        </ul>
+      </div>
+
+      <!-- Infos pratiques -->
+      <div class="col-md-4 footer-contact">
+        <h6>Contact & Horaires</h6>
+        <p><i class="fas fa-map-marker-alt"></i> Dakar, Sénégal</p>
+        <p><i class="fas fa-phone-alt"></i> +221 77 123 45 67</p>
+        <p><i class="fas fa-clock"></i> Lun - Dim : 6h - 22h</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+    </div>
+    <hr />
+    <div class="footer-bottom text-center">
+      <p>&copy; {{ currentYear }} Boulangerie Hi-Tech - Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>

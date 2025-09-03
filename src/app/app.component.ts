@@ -4,10 +4,11 @@ import { AuthService } from './app/core/auth.service';
 import { NavbarComponent } from './app/shared/navbar/navbar.component';
 import { NgIf } from '@angular/common';
 import { ChatComponent } from "./app/support/chat/chat.component";
+import { FooterComponent } from "./app/shared/footer/footer.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, NgIf, ChatComponent],
+  imports: [RouterOutlet, NavbarComponent, NgIf, ChatComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

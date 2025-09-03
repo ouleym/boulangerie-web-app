@@ -33,6 +33,11 @@
             <span *ngIf="panierCount > 0" class="badge bg-danger ms-1">{{ panierCount }}</span>
           </a>
         </li>
+        <li class="nav-item" *ngIf="isClient">
+          <a class="nav-link" routerLink="/payement" routerLinkActive="active">
+            Payement
+          </a>
+        </li>
 
         <!-- EMPLOYÉ -->
         <li class="nav-item" *ngIf="isEmploye">

@@ -1,66 +1,19 @@
-// =================== VARIABLES ===================
-$navbar-height: 70px;
-$chat-panel-width: 400px;
+html, body {
+  height: 100%;
+  margin: 0;
+}
 
-// =================== LAYOUT PRINCIPAL ===================
 .app-container {
+  min-height: 100vh; /* occupe toute la hauteur */
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background: #f8fafc;
 }
 
-// =================== CONTENU PRINCIPAL ===================
 .main-content {
-  flex: 1;
-  width: 100%;
-  transition: all 0.3s ease;
-  
-  // Avec navbar: ajouter padding-top pour compenser la navbar fixe
-  &.with-navbar {
-    padding-top: $navbar-height;
-  }
-  
-  // Responsive: sur mobile, s'assurer que le chat n'interfère pas
-  @media (min-width: 769px) {
-    // Sur desktop, laisser un peu d'espace à droite quand le chat peut s'ouvrir
-    padding-right: 0;
-  }
+  flex: 1; /* prend tout l’espace */
+  padding: 20px;
 }
 
-// =================== RESPONSIVE ===================
-@media (max-width: 768px) {
-  .main-content {
-    // Sur mobile, le contenu prend toute la largeur
-    width: 100%;
-    padding-right: 0;
-  }
-}
-
-// =================== UTILITAIRES ===================
-// Classes utilitaires pour le spacing si besoin
-.container-fluid {
-  width: 100%;
-  padding: 0 1rem;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-// Amélioration de l'expérience utilisateur
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+app-footer {
+  margin-top: auto; /* pousse le footer en bas */
 }

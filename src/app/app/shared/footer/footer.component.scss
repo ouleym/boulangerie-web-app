@@ -1,0 +1,29 @@
+.modern-footer {
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px 20px;   /* 🔥 réduit fortement la hauteur */
+  font-size: 0.8rem;    /* texte plus petit */
+  color: #555;
+  text-align: center;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .footer-brand {
+    font-weight: 600;
+    color: var(--bs-primary);
+    font-size: 0.9rem;
+  }
+
+  .social-icons a {
+    margin-left: 10px;
+    font-size: 1rem;
+    color: var(--bs-primary);
+    transition: color 0.3s;
+
+    &:hover {
+      color: black;
+    }
+  }
+}

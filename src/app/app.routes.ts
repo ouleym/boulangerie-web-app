@@ -26,6 +26,7 @@ import { CategoriesListComponent } from './app/categories/list/list.component';
 import { CategoriesFormComponent } from './app/categories/form/form.component';
 import { CategoriesDetailComponent } from './app/categories/detail/detail.component';
 import { AdminStatsComponent } from './app/support/admin-stats/admin-stats.component';
+import { PayementComponent } from './app/payement/payement.component';
 
 export const routes: Routes = [
   // ============================================
@@ -202,8 +203,8 @@ export const routes: Routes = [
   },
 
   {
-    path: 'checkout',
-    component: CommandesCheckoutComponent,
+    path: 'payement',
+    component: PayementComponent,
     canActivate: [authGuard, roleGuard],
     data: { roles: ['Client'] },
     title: 'Finaliser Commande'
