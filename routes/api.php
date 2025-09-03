@@ -26,6 +26,15 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // ✅ Routes protégées par JWT
 Route::middleware(['auth:api'])->group(function () {
+    // Routes de test (à supprimer en production)
+    Route::post('/test-auth', [\App\Http\Controllers\API\PaiementController::class, 'testAuth']);
+    Route::get('/test-cinetpay', function() {
+        $service = new \App\Services\CinetpayService();
+        return response()->json($service->testConfiguration());
+    });
+
+    // Route de paiement
+    Route::post('/payment/init', [\App\Http\Controllers\API\PaiementController::class, 'initier']);
 
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -44,17 +53,19 @@ Route::middleware(['auth:api'])->group(function () {
     ]);
 
     Route::prefix('chats')->group(function () {
-        Route::get('/', [ChatController::class, 'index']);              // GET /api/chats
-        Route::post('/', [ChatController::class, 'store']);             // POST /api/chats
-        Route::get('/{chat}', [ChatController::class, 'show']);         // GET /api/chats/{id}
-        Route::post('/{chat}/messages', [ChatController::class, 'sendMessage']); // POST /api/chats/{id}/messages
-        Route::delete('/{chat}', [ChatController::class, 'destroy']);   // DELETE /api/chats/{id}
+        Route::get('/', [ChatController::class, 'index']);
+        Route::post('/', [ChatController::class, 'store']);
+        Route::get('/{chat}', [ChatController::class, 'show']);
+        Route::post('/{chat}/messages', [ChatController::class, 'sendMessage']);
+        Route::delete('/{chat}', [ChatController::class, 'destroy']);
     });
-
 });
+
+// Routes publiques pour les callbacks CinetPay
+Route::post('/payment/notify', [\App\Http\Controllers\API\PaiementController::class, 'notify']);
 
 Route::fallback(function () {
     return response()->json([
-        'message' => 'Route non trouvée. Vérifie l’URL.'
+        'message' => 'Route non trouvée. Vérifie l\'URL.'
     ], 404);
 });
