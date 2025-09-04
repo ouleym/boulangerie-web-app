@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
@@ -11,6 +10,7 @@
 /node_modules
 npm-debug.log
 yarn-error.log
+*.log
 
 # IDEs and editors
 .idea/
@@ -20,16 +20,14 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
-
-# Visual Studio Code
-.vscode/*
+/.vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
+/.history/*
 
-# Miscellaneous
+# Visual Studio Code
 /.angular/cache
 .sass-cache/
 /connect.lock
@@ -40,22 +38,18 @@ testem.log
 
 # System files
 .DS_Store
-=======
-*.log
-.DS_Store
+Thumbs.db
+
+# Laravel / backend
 .env
 .env.backup
 .env.production
 .phpactor.json
 .phpunit.result.cache
 /.fleet
-/.idea
 /.nova
 /.phpunit.cache
-/.vscode
-/.zed
 /auth.json
-/node_modules
 /public/build
 /public/hot
 /public/storage
@@ -64,5 +58,5 @@ testem.log
 /vendor
 Homestead.json
 Homestead.yaml
->>>>>>> 5500039 (First laravel push)
-Thumbs.db
+!public/favicon.ico
+.angular/
