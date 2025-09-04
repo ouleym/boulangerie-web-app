@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Livraison;
+use App\Observers\LivraisonObserver;
 use Illuminate\Support\ServiceProvider;
 use App\Services\OpenAIService;
 use App\Services\MockOpenAIService;
@@ -41,6 +43,9 @@ class AppServiceProvider extends ServiceProvider
         if (config('chat.enabled', true)) {
             $this->bootChatConfiguration();
         }
+
+        Livraison::observe(LivraisonObserver::class);
+
     }
 
     /**

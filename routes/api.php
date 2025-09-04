@@ -1,19 +1,18 @@
 <?php
 
-use App\Http\Controllers\ChatController;
-use App\Services\CinetpayService;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\{
-    AuthController,
+use App\Http\Controllers\API\{AuthController,
     CategorieController,
     CommandeController,
     DashboardController,
-    FactureController,
     LivraisonController,
     NotificationController,
     ProduitController,
-    PromotionController,
-};
+    PromotionController,};
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\FactureController;
+use App\Services\CinetpayService;
+use Illuminate\Support\Facades\Route;
 
 
 /*
@@ -57,6 +56,17 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/{chat}/messages', [ChatController::class, 'sendMessage']);
         Route::delete('/{chat}', [ChatController::class, 'destroy']);
     });
+
+
+});
+
+Route::prefix('emails')->group(function () {
+    Route::post('/promotion', [EmailController::class, 'sendPromotionEmail']);
+    Route::post('/commande-confirmation', [EmailController::class, 'sendCommandeConfirmation']);
+    Route::post('/livraison', [EmailController::class, 'sendLivraisonEmail']);
+    Route::post('/facture', [EmailController::class, 'sendFactureEmail']);
+    Route::get('/history', [EmailController::class, 'getEmailHistory']);
+    Route::get('/test-config', [EmailController::class, 'testEmailConfiguration']);
 });
 
 // Routes publiques pour les callbacks CinetPay
