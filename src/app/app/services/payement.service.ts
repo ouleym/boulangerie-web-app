@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class PayementService {
 
   // Récupérer le token depuis le localStorage
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token'); // ou sessionStorage
+    const token = localStorage.getItem('token');
     
     if (!token) {
       throw new Error('Token d\'authentification manquant. Veuillez vous connecter.');
@@ -26,11 +27,23 @@ export class PayementService {
   }
 
   initPayment(montant: number): Observable<any> {
-    const headers = this.getAuthHeaders();
-    
-    return this.http.post(`${this.apiUrl}/payment/init`, 
-      { montant }, 
-      { headers }
-    );
+    try {
+      const headers = this.getAuthHeaders();
+      
+      return this.http.post(`${this.apiUrl}/payment/init`, 
+        { montant }, 
+        { headers }
+      ).pipe(
+        catchError(this.handleError)
+      );
+    } catch (error) {
+      return throwError(() => error);
+    }
+  }
+
+  // ✅ AJOUTÉ: Gestion centralisée des erreurs
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('Erreur PayementService:', error);
+    return throwError(() => error);
   }
 }
