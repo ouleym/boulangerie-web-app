@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
@@ -13,9 +12,9 @@ class MockCinetpayService
 
     public function __construct()
     {
-        $this->baseUrl = config('services.cinetpay.base_url', 'https://api-checkout.cinetpay.com/v2');
-        $this->apiKey = config('services.cinetpay.api_key', env('CINETPAY_API_KEY'));
-        $this->siteId = config('services.cinetpay.site_id', env('CINETPAY_SITE_ID'));
+        $this->baseUrl = 'https://api-checkout.cinetpay.com/v2';
+        $this->apiKey  = 'mock_api_key';
+        $this->siteId  = 'mock_site_id';
 
         Log::info('Mock CinetPay Service initialized');
     }
@@ -37,11 +36,11 @@ class MockCinetpayService
         $mockResponse = [
             'code' => '201',
             'message' => 'CREATED',
-            'description' => 'Transaction created successfully',
+            'description' => 'Transaction created successfully (MOCK)',
             'data' => [
                 'transaction_id' => $transactionId,
                 'payment_method' => 'ALL',
-                'payment_url' => "https://checkout.cinetpay.com/payment/{$transactionId}",
+                'payment_url' => "https://mock-checkout.cinetpay.com/payment/{$transactionId}",
                 'amount' => $amount,
                 'currency' => 'XOF',
                 'description' => $description,
@@ -77,9 +76,9 @@ class MockCinetpayService
         return [
             'service_type' => 'MOCK',
             'base_url' => $this->baseUrl,
-            'api_key_configured' => !empty($this->apiKey),
-            'site_id_configured' => !empty($this->siteId),
-            'api_key_length' => $this->apiKey ? strlen($this->apiKey) : 0,
+            'api_key_configured' => true,
+            'site_id_configured' => true,
+            'api_key_length' => strlen($this->apiKey),
             'site_id_value' => $this->siteId,
             'status' => 'MOCK SERVICE READY'
         ];
