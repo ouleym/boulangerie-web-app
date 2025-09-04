@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasApiTokens, HasRoles;
+    use HasFactory, Notifiable, HasRoles;
 
+    /**
+     * The attributes that are mass assignable.
+     */
     protected $fillable = [
         'nom',
         'prenom',
@@ -21,13 +23,20 @@ class User extends Authenticatable implements JWTSubject
         'telephone',
         'adresse',
         'ville',
+        'email_verified_at',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     */
     protected function casts(): array
     {
         return [
@@ -37,33 +46,58 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * JWT : Identifiant utilisateur
+     * Relation avec les commandes
      */
-    public function getJWTIdentifier()
+    public function commandes()
     {
-        return $this->getKey();
+        return $this->hasMany(Commande::class);
     }
 
     /**
-     * JWT : Claims personnalisés (ajout des rôles Spatie)
+     * Vérifier si l'utilisateur est un client
      */
-    public function getJWTCustomClaims(): array
+    public function isClient()
     {
-        return [
-            'roles' => $this->getRoleNames() // ✅ Les rôles seront inclus dans le token
-        ];
+        return $this->hasRole('Client');
     }
 
     /**
-     * Accesseur pour le nom complet
+     * Vérifier si l'utilisateur est un employé
      */
-    public function getNomCompletAttribute(): string
+    public function isEmploye()
     {
-        return $this->prenom . ' ' . $this->nom;
+        return $this->hasRole('Employe');
     }
 
-    public function chats(): \Illuminate\Database\Eloquent\Relations\HasMany
+    /**
+     * Vérifier si l'utilisateur est un admin
+     */
+    public function isAdmin()
     {
-        return $this->hasMany(Chat::class)->orderBy('updated_at', 'desc');
+        return $this->hasRole('Admin');
+    }
+
+    /**
+     * Vérifier si l'utilisateur peut gérer les commandes
+     */
+    public function canManageOrders()
+    {
+        return $this->hasAnyRole(['Admin', 'Employe']);
+    }
+
+    /**
+     * Scope pour les clients seulement
+     */
+    public function scopeClients($query)
+    {
+        return $query->role('Client');
+    }
+
+    /**
+     * Scope pour les employés et admins
+     */
+    public function scopeStaff($query)
+    {
+        return $query->role(['Admin', 'Employe']);
     }
 }
