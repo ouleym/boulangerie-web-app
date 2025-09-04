@@ -20,20 +20,23 @@ class Payement extends Model
     }
 
     protected $fillable = [
-        'user_id',        // Ajouté user_id pour correspondre à la migration
-        'commande_id',    // Optionnel si vous avez des commandes
+        'user_id',
+        'commande_id',
         'montant',
         'methode',
         'devise',
         'statut',
         'transaction_ref',
+        'payment_token',      // ✅ AJOUTÉ
+        'cinetpay_data',      // ✅ AJOUTÉ
         'date_paiement',
-        'status'          // Garde aussi status pour compatibilité
+        'status'
     ];
 
     protected $casts = [
         'montant' => 'decimal:2',
         'date_paiement' => 'datetime',
+        'cinetpay_data' => 'array'  // ✅ AJOUTÉ
     ];
 
     public function user()

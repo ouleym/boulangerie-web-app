@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Services\CinetpayService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\{
     AuthController,
@@ -14,6 +15,7 @@ use App\Http\Controllers\API\{
     PromotionController,
 };
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,13 +28,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // ✅ Routes protégées par JWT
 Route::middleware(['auth:api'])->group(function () {
-    // Routes de test (à supprimer en production)
-    Route::post('/test-auth', [\App\Http\Controllers\API\PaiementController::class, 'testAuth']);
-    Route::get('/test-cinetpay', function() {
-        $service = new \App\Services\CinetpayService();
-        return response()->json($service->testConfiguration());
+    Route::get('/payment/test', function (CinetpayService $cinetpay) {
+        return response()->json($cinetpay->testPaiement());
     });
-
     // Route de paiement
     Route::post('/payment/init', [\App\Http\Controllers\API\PaiementController::class, 'initier']);
 
@@ -63,6 +61,8 @@ Route::middleware(['auth:api'])->group(function () {
 
 // Routes publiques pour les callbacks CinetPay
 Route::post('/payment/notify', [\App\Http\Controllers\API\PaiementController::class, 'notify']);
+Route::post('/payment/success', [\App\Http\Controllers\API\PaiementController::class, 'notify']);
+
 
 Route::fallback(function () {
     return response()->json([
