@@ -1,1 +1,7 @@
-<p>list works!</p>
+<div *ngFor="let commande of commandes" class="commande-card">
+  <h3>Commande #{{ commande.id }}</h3>
+  <p>Client: {{ commande.client.nom }}</p>
+  <p>Statut: {{ commande.statut }}</p> <!-- correct -->
+  <p>Total: {{ commande.total | currency:'XOF' }}</p>
+</div>
+

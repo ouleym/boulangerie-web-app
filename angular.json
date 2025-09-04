@@ -101,6 +101,7 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+
               "src/styles.scss"
             ],
             "scripts": [
@@ -110,5 +111,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "b4f5ee98-8bf0-4cda-b8c4-b8cd3e7968f1"
   }
 }

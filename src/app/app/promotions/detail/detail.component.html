@@ -1,1 +1,7 @@
-<p>detail works!</p>
+<div *ngIf="promotion" class="promotion-detail">
+  <h2>{{ promotion.titre }}</h2>
+  <p>{{ promotion.description }}</p>
+  <p>Réduction: {{ promotion.reductionPourcentage }}%</p>
+  <p>Valide jusqu'au: {{ promotion.dateFin | date }}</p>
+</div>
+

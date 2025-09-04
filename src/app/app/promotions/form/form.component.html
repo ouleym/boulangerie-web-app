@@ -1,1 +1,29 @@
-<p>form works!</p>
+<form [formGroup]="promotionForm" (ngSubmit)="submitForm()">
+  <div>
+    <label>Titre :</label>
+    <input formControlName="titre" />
+  </div>
+
+  <div>
+    <label>Description :</label>
+    <textarea formControlName="description"></textarea>
+  </div>
+
+  <div>
+    <label>Réduction (%) :</label>
+    <input type="number" formControlName="reductionPourcentage" />
+  </div>
+
+  <div>
+    <label>Date de début :</label>
+    <input type="date" formControlName="dateDebut" />
+  </div>
+
+  <div>
+    <label>Date de fin :</label>
+    <input type="date" formControlName="dateFin" />
+  </div>
+
+  <button type="submit" [disabled]="promotionForm.invalid">Enregistrer</button>
+</form>
+

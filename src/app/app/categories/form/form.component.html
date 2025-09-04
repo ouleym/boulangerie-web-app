@@ -1,1 +1,14 @@
-<p>form works!</p>
+<form [formGroup]="categorieForm" (ngSubmit)="submitForm()">
+  <div>
+    <label>Nom :</label>
+    <input formControlName="nom" />
+  </div>
+
+  <div>
+    <label>Description :</label>
+    <textarea formControlName="description"></textarea>
+  </div>
+
+  <button type="submit" [disabled]="categorieForm.invalid">Enregistrer</button>
+</form>
+

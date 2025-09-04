@@ -1,4 +1,6 @@
-.modern-nav {
+/* navbar.component.scss */
+
+.navbar-modern {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   border-radius: 18px;
@@ -6,7 +8,9 @@
   padding: 14px 20px;
   max-width: 1300px;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    8px 8px 16px rgba(163, 177, 198, 0.4), 
+    -8px -8px 16px rgba(255, 255, 255, 0.5);
 
   .navbar-brand {
     font-size: 1.6rem;
@@ -20,6 +24,7 @@
     &:hover {
       opacity: 0.85;
       transform: translateY(-2px);
+      transition: all 0.2s ease;
     }
   }
 
@@ -45,35 +50,30 @@
     }
 
     &.active {
-      background: var(--bs-primary);
+      background-color: var(--bs-primary);
       color: #fff !important;
       font-weight: 600;
     }
   }
 
-  .badge {
-    font-size: 0.75rem;
-    padding: 3px 7px;
-    border-radius: 8px;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-    100% { transform: scale(1); }
-  }
-
-  .user-avatar {
+  /* Avatar utilisateur */
+  .user-avatar, .avatar-circle {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--bs-primary);
-    color: #fff;
-    font-weight: 700;
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-primary-dark, #0056b3));
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+    &:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease;
+    }
   }
 
   .user-info {
@@ -90,6 +90,61 @@
     }
   }
 
+  /* Badge panier / notif */
+  .badge {
+    font-size: 0.75rem;
+    padding: 3px 7px;
+    border-radius: 8px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  /* Dropdown stylisé */
+  .dropdown-menu {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    padding: 8px 0;
+    min-width: 250px;
+    
+    .dropdown-item {
+      padding: 8px 20px;
+      transition: all 0.2s ease;
+      border-radius: 8px;
+      margin: 2px 8px;
+      
+      &:hover {
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        transform: translateX(4px);
+      }
+      
+      i {
+        width: 20px;
+        text-align: center;
+      }
+    }
+    
+    .dropdown-header {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--bs-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 20px 4px;
+    }
+    
+    .dropdown-divider {
+      margin: 8px 12px;
+      opacity: 0.3;
+    }
+  }
+
+  /* Bouton de déconnexion */
   .btn-outline-danger {
     border-radius: 10px;
     font-weight: 500;
@@ -102,15 +157,42 @@
     }
   }
 
+  /* Responsive */
   @media (max-width: 991.98px) {
     border-radius: 0;
     margin: 0;
     max-width: 100%;
+
     .navbar-nav {
       text-align: center;
+
       .nav-item {
         margin: 6px 0;
       }
+
+      .dropdown-menu {
+        position: static;
+        float: none;
+        box-shadow: none;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        margin-top: 8px;
+      }
     }
+  }
+}
+
+/* Animation d'entrée */
+.navbar {
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }

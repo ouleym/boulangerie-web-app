@@ -20,6 +20,7 @@ export interface JwtPayload {
 })
 export class AuthService {
   redirectUrl: string = '/login';
+<<<<<<< HEAD
  
   private loggedInSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
   public loggedIn$ = this.loggedInSubject.asObservable();
@@ -61,6 +62,40 @@ export class AuthService {
     })
   );
 }
+=======
+  
+  private loggedInSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  public loggedIn$ = this.loggedInSubject.asObservable();
+
+  constructor(private httpClient: HttpClient) {}
+
+  login(request: any): Observable<AuthResponse> {
+    return this.httpClient.post(
+      `${environment.ApiUrl}/login`,
+      request,
+      { responseType: 'text' }
+    ).pipe(
+      map((resp: string) => {
+        try {
+          const parsed = JSON.parse(resp);
+          if (parsed.token) {
+            localStorage.setItem('token', parsed.token);
+            this.loggedInSubject.next(true);
+            console.log('Utilisateur connecté avec succès');
+          }
+          return parsed as AuthResponse;
+        } catch (e) {
+          console.error('La réponse JSON est invalide :', resp);
+          throw new Error('Réponse serveur non conforme.');
+        }
+      }),
+      catchError(error => {
+        console.error('Erreur de login :', error);
+        return throwError(() => error);
+      })
+    );
+  }
+>>>>>>> 4ae0300 (Initial commit de mon projet frontend)
 
   register(request: any): Observable<AuthResponse> {
     return this.httpClient.post<AuthResponse>(`${environment.ApiUrl}/register`, request).pipe(
@@ -84,7 +119,11 @@ export class AuthService {
   getDecodedToken(): JwtPayload | null {
     const token = this.getToken();
     if (!token) return null;
+<<<<<<< HEAD
    
+=======
+    
+>>>>>>> 4ae0300 (Initial commit de mon projet frontend)
     try {
       return jwtDecode<JwtPayload>(token);
     } catch (error) {
@@ -102,6 +141,7 @@ export class AuthService {
   isAuthenticated(): boolean {
     const token = this.getToken();
     if (!token) return false;
+<<<<<<< HEAD
     
     const decoded = this.getDecodedToken();
     if (!decoded) return false;
@@ -113,6 +153,19 @@ export class AuthService {
       this.logout(); // Token expiré, déconnecter automatiquement
     }
    
+=======
+
+    const decoded = this.getDecodedToken();
+    if (!decoded) return false;
+
+    const now = Math.floor(Date.now() / 1000);
+    const isValid = decoded.exp > now;
+    
+    if (!isValid) {
+      this.logout(); // Token expiré, déconnecter automatiquement
+    }
+    
+>>>>>>> 4ae0300 (Initial commit de mon projet frontend)
     return isValid;
   }
 

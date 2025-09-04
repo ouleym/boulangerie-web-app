@@ -1,1 +1,16 @@
+<<<<<<< HEAD
 <p>list works!</p>
+=======
+<div class="categorie-list">
+  <h2>Catégories</h2>
+  <div *ngIf="categories.length > 0; else noCategories">
+    <div *ngFor="let cat of categories" class="categorie-card">
+      <h3>{{ cat.nom }}</h3>
+      <p>{{ cat.description }}</p>
+    </div>
+  </div>
+  <ng-template #noCategories>
+    <p>Aucune catégorie disponible.</p>
+  </ng-template>
+</div>
+>>>>>>> 4ae0300 (Initial commit de mon projet frontend)

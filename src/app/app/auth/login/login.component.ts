@@ -7,14 +7,14 @@ import { Router, RouterLink } from '@angular/router';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink], 
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss'] 
 })
 export class LoginComponent {
   message: string = '';
   isLoading: boolean = false;
- 
+
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
@@ -34,12 +34,10 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
         this.isLoading = false;
-        
+
         if (response.status === 200 && response.token) {
-          // Token déjà stocké dans AuthService
           console.log('Connexion réussie');
-          
-          // Redirection intelligente basée sur le rôle
+
           this.redirectToDashboard();
         } else {
           this.message = 'Email ou mot de passe incorrect';
@@ -57,20 +55,17 @@ export class LoginComponent {
    * Redirige l'utilisateur vers le bon dashboard selon son rôle
    */
   private redirectToDashboard(): void {
-  // Normalisation en minuscule côté Angular
-  const userRoles = this.authService.getUserRoles().map((r: string) => r.toLowerCase());
+    const userRoles = this.authService.getUserRoles().map((r: string) => r.toLowerCase());
 
-  // Redirection par ordre de priorité : admin > employe > client
-  if (userRoles.includes('admin')) {
-    this.router.navigate(['/dashboard/admin']);
-  } else if (userRoles.includes('employe')) {
-    this.router.navigate(['/dashboard/employe']);
-  } else if (userRoles.includes('client')) {
-    this.router.navigate(['/dashboard/client']);
-  } else {
-    console.warn('Aucun rôle reconnu, redirection vers client par défaut');
-    this.router.navigate(['/dashboard/client']);
+    if (userRoles.includes('admin')) {
+      this.router.navigate(['/dashboard/admin']);
+    } else if (userRoles.includes('employe')) {
+      this.router.navigate(['/dashboard/employe']);
+    } else if (userRoles.includes('client')) {
+      this.router.navigate(['/dashboard/client']);
+    } else {
+      console.warn('Aucun rôle reconnu, redirection vers client par défaut');
+      this.router.navigate(['/dashboard/client']);
+    }
   }
-}
-
 }

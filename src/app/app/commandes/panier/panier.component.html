@@ -1,1 +1,5 @@
-<p>panier works!</p>
+<div *ngFor="let produit of produits">
+  <p>{{ produit.nom }} x {{ produit.quantite }} = {{ produit.prix * produit.quantite | currency }}</p>
+</div>
+<p>Total: {{ getTotal() | currency }}</p>
+

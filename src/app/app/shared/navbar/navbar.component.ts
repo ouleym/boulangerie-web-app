@@ -45,7 +45,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.userRoles = this.authService.getUserRoles();
     const decoded = this.authService.getDecodedToken();
     
-    console.log('Rôles de l\'utilisateur:', this.userRoles);
+    console.log('Rôles de l\'utilisateur:', this.userRoles); // Debug
     
     if (decoded) {
       this.userDisplayName = decoded.nom || decoded.email || 'Utilisateur';
@@ -75,8 +75,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private formatRoles(roles: string[]): string {
     const roleLabels: { [key: string]: string } = {
       'Admin': 'Administrateur',
-      'Employe': 'Employé', 
-      'Client': 'Client'
+      'Employe': 'Employé',
+      'Client': 'Client',
+      'admin': 'Administrateur',
+      'employe': 'Employé',
+      'client': 'Client'
     };
     
     return roles
@@ -92,7 +95,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     } else if (this.userRoles.includes('Client')) {
       this.dashboardRoute = '/dashboard/client';
     } else {
-      this.dashboardRoute = '/dashboard/client';
+      this.dashboardRoute = '/dashboard/client'; // Par défaut
     }
   }
 
@@ -101,16 +104,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return this.userRoles.includes('Client');
   }
 
-  get isEmploye(): boolean {
-    return this.userRoles.includes('Employe');
+  get isEmployeOrAdmin(): boolean {
+    return this.userRoles.includes('Employe') || this.userRoles.includes('Admin');
   }
 
   get isAdmin(): boolean {
     return this.userRoles.includes('Admin');
-  }
-
-  get isEmployeOrAdmin(): boolean {
-    return this.userRoles.includes('Employe') || this.userRoles.includes('Admin');
   }
 
   logout() {

@@ -6,8 +6,10 @@ import { NgIf } from '@angular/common';
 import { ChatComponent } from "./app/support/chat/chat.component";
 import { FooterComponent } from "./app/shared/footer/footer.component";
 
+
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet, NavbarComponent, NgIf, ChatComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -17,10 +19,12 @@ export class AppComponent {
   isLoggedIn = false;
 
   constructor(private router: Router, private authService: AuthService) {
-    // Surveille la navigation pour détecter si on est sur la page de login
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.isLoginPage = event.urlAfterRedirects === '/login' || event.urlAfterRedirects === '/register';
+        // Vérifie si on est sur login ou register
+        this.isLoginPage = ['/login', '/register'].includes(event.urlAfterRedirects);
+
+        // Vérifie l’authentification
         this.isLoggedIn = this.authService.isAuthenticated();
       }
     });

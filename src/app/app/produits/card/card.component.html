@@ -1,1 +1,5 @@
-<p>card works!</p>
+<div class="card">
+  <img [src]="produit.imageUrl" alt="{{ produit.nom }}" />
+  <h3>{{ produit.nom }}</h3>
+  <p>{{ produit.prix | currency:'XOF' }}</p>
+</div>

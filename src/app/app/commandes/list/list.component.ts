@@ -1,11 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Commande } from '../../models/commande.model';
+import { CommandeService } from '../../services/commande.service';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-list-commande',
-  imports: [],
+  selector: 'app-commande-list',
+  standalone: true,          
+  imports: [CommonModule],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrls: ['./list.component.scss']
 })
-export class CommandesListComponent {
+export class CommandesListComponent implements OnInit {
+  commandes: Commande[] = [];
+
+  constructor(private commandeService: CommandeService) {}
+
+  ngOnInit(): void {
+    this.loadCommandes();
+  }
+
+  loadCommandes(): void {
+    this.commandeService.getCommandes().subscribe({
+      next: (res) => this.commandes = res.data,
+      error: (err) => console.error(err)
+    });
+  }
 
 }

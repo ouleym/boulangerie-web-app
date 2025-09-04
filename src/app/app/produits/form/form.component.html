@@ -1,1 +1,23 @@
-<p>form works!</p>
+
+<form (ngSubmit)="onSubmit()" #form="ngForm">
+  <label>Nom</label>
+  <input type="text" [(ngModel)]="produit.nom" name="nom" required />
+
+  <label>Description</label>
+  <textarea [(ngModel)]="produit.description" name="description"></textarea>
+
+  <label>Prix</label>
+  <input type="number" [(ngModel)]="produit.prix" name="prix" required />
+
+  <label>Stock</label>
+  <input type="number" [(ngModel)]="produit.stock" name="stock" />
+
+  <label>Catégorie</label>
+  <input type="text" [(ngModel)]="produit.categorieId" name="categorie" />
+
+  <label>Image URL</label>
+  <input type="text" [(ngModel)]="produit.imageUrl" name="imageUrl" />
+
+  <button type="submit">Enregistrer</button>
+</form>
+>>>>>>> 4ae0300 (Initial commit de mon projet frontend)

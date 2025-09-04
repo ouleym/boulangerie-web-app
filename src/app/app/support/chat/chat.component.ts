@@ -398,3 +398,4 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     return this.chats.length > 0;
   }
 }
+

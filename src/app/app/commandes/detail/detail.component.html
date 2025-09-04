@@ -1,1 +1,13 @@
-<p>detail works!</p>
+
+<div *ngIf="commande">
+  <h2>Commande #{{ commande.id }}</h2>
+  <p>Client: {{ commande.client.nom }}</p>
+  <p>Statut: {{ commande.statut }}</p>
+  <ul>
+    <li *ngFor="let detail of commande.details">
+      {{ detail.produit.nom }} x {{ detail.quantite }} = {{ detail.prixUnitaire * detail.quantite | currency:'XOF' }}
+    </li>
+  </ul>
+  <p>Total: {{ commande.total | currency:'XOF' }}</p>
+</div>
+

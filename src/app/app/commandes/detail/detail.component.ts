@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Commande } from '../../models/commande.model';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+
 
 @Component({
-  selector: 'app-detail-commande',
-  imports: [],
+  selector: 'app-commande-detail',
+  standalone: true,          
+  imports: [CommonModule],
   templateUrl: './detail.component.html',
-  styleUrl: './detail.component.scss'
+  styleUrls: ['./detail.component.scss']
 })
 export class CommandesDetailComponent {
-
+  @Input() commande!: Commande;
 }

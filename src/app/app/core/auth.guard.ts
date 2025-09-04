@@ -6,6 +6,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+<<<<<<< HEAD
   const rawUrl = state.url || '';
   const url = rawUrl.split('?')[0].split('#')[0]; // normaliser
 
@@ -26,5 +27,11 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   console.log('[authGuard] utilisateur NON authentifié — redirection vers', authService.redirectUrl || '/login');
   router.navigateByUrl(authService.redirectUrl || '/login', { replaceUrl: true });
+=======
+  if(authService.isAuthenticated() ){
+    return true;
+  }
+   router.navigate([authService.redirectUrl]);
+>>>>>>> 4ae0300 (Initial commit de mon projet frontend)
   return false;
 };

@@ -2,7 +2,7 @@
   <!-- Navbar en haut -->
   <app-navbar *ngIf="!isLoginPage && isLoggedIn"></app-navbar>
 
-  <!-- Contenu -->
+  <!-- Contenu principal -->
   <main class="main-content" [class.with-navbar]="!isLoginPage && isLoggedIn">
     <router-outlet></router-outlet>
   </main>
@@ -10,6 +10,6 @@
   <!-- Chat -->
   <app-chat *ngIf="!isLoginPage && isLoggedIn"></app-chat>
 
-  <!-- ✅ Footer doit être le dernier élément -->
+  <!-- Footer -->
   <app-footer *ngIf="!isLoginPage && isLoggedIn"></app-footer>
 </div>

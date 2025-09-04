@@ -1,1 +1,15 @@
-<p>list works!</p>
+<div class="promotion-list">
+  <h2>Promotions</h2>
+  <div *ngIf="promotions.length > 0; else noPromos">
+    <div *ngFor="let promo of promotions" class="promo-card">
+      <h3>{{ promo.titre }}</h3>
+      <p>{{ promo.description }}</p>
+      <p>Réduction: {{ promo.reductionPourcentage }}%</p>
+      <p>Valide jusqu'au: {{ promo.dateFin | date }}</p>
+    </div>
+  </div>
+  <ng-template #noPromos>
+    <p>Aucune promotion disponible pour le moment.</p>
+  </ng-template>
+</div>
+

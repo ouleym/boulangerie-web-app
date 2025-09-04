@@ -8,7 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule,RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -45,88 +45,56 @@ export class RegisterComponent implements OnInit {
   private passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const password = control.get('password');
     const confirmPassword = control.get('password_confirmation');
-    
-    if (!password || !confirmPassword) {
-      return null;
-    }
-    
+    if (!password || !confirmPassword) return null;
     return password.value !== confirmPassword.value ? { 'passwordMismatch': true } : null;
   }
 
   register(): void {
-    // Réinitialiser le message d'erreur
     this.message = '';
-    
-    if (this.registerForm.valid) {
-      this.isLoading = true;
-      
-      // Préparer les données à envoyer
-      const formData = { ...this.registerForm.value };
-      
-      // S'assurer que password_confirmation est présent
-      if (!formData.password_confirmation) {
-        formData.password_confirmation = formData.password;
-      }
-
-      console.log('Données envoyées:', formData); // Debug
-  
-      this.authService.register(formData).subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          console.log('Inscription réussie:', response);
-          this.message = 'Inscription réussie ! Redirection en cours...';
-          
-          // Redirection après un court délai pour que l'utilisateur voie le message
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 1500);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.isLoading = false;
-          console.error('Erreur complète:', error); // Debug complet
-          this.handleRegistrationError(error);
-        }
-      });
-    } else {
+    if (!this.registerForm.valid) {
       this.message = 'Veuillez corriger les erreurs dans le formulaire';
       this.markFormGroupTouched();
+      return;
     }
+
+    this.isLoading = true;
+    const formData = { ...this.registerForm.value };
+    
+    // Supprimer password_confirmation avant envoi
+    delete formData.password_confirmation;
+
+    this.authService.register(formData).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.message = 'Inscription réussie ! Redirection en cours...';
+        setTimeout(() => this.router.navigate(['/login']), 1500);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoading = false;
+        this.handleRegistrationError(error);
+      }
+    });
   }
 
   private handleRegistrationError(error: HttpErrorResponse): void {
-    console.log('Status:', error.status);
-    console.log('Error body:', error.error);
-    
     switch (error.status) {
       case 422:
-        // Erreurs de validation Laravel
         if (error.error?.errors) {
           const errors = error.error.errors;
-          const errorMessages = Object.entries(errors)
-            .map(([field, messages]: [string, any]) => {
-              const fieldMessages = Array.isArray(messages) ? messages : [messages];
-              return `${field}: ${fieldMessages.join(', ')}`;
-            });
-          this.message = errorMessages.join(' | ');
-        } else if (error.error?.message) {
-          this.message = error.error.message;
+          const messages = Object.entries(errors).map(([field, msgs]: [string, any]) =>
+            `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`
+          );
+          this.message = messages.join(' | ');
         } else {
-          this.message = 'Erreur de validation des données';
+          this.message = error.error?.message || 'Erreur de validation des données';
         }
         break;
-        
       case 409:
         this.message = 'Cette adresse email est déjà utilisée';
         break;
-        
-      case 500:
-        this.message = 'Erreur serveur. Veuillez réessayer plus tard.';
-        break;
-        
       case 0:
-        this.message = 'Impossible de contacter le serveur. Vérifiez votre connexion internet.';
+        this.message = 'Impossible de contacter le serveur. Vérifiez votre connexion.';
         break;
-        
       default:
         this.message = error.error?.message || `Erreur ${error.status}: ${error.statusText}`;
     }
@@ -139,7 +107,6 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  // Méthodes utilitaires pour les validations
   isFieldInvalid(fieldName: string): boolean {
     const field = this.registerForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
@@ -149,17 +116,14 @@ export class RegisterComponent implements OnInit {
     const field = this.registerForm.get(fieldName);
     if (field && field.errors && field.touched) {
       const errors = field.errors;
-      
       if (errors['required']) return `Le ${fieldName} est requis`;
       if (errors['email']) return 'Format d\'email invalide';
       if (errors['minlength']) return `Minimum ${errors['minlength'].requiredLength} caractères`;
       if (errors['pattern'] && fieldName === 'telephone') return 'Format de téléphone invalide';
     }
-    
     if (fieldName === 'password_confirmation' && this.registerForm.errors?.['passwordMismatch']) {
       return 'Les mots de passe ne correspondent pas';
     }
-    
     return '';
   }
 

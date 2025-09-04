@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Commande } from '../../models/commande.model';
 
 @Component({
-  selector: 'app-status-commande',
-  imports: [],
+  selector: 'app-commande-status',
   templateUrl: './status.component.html',
-  styleUrl: './status.component.scss'
+  styleUrls: ['./status.component.scss']
 })
 export class CommandesStatusComponent {
-
+  @Input() commande!: Commande;
 }

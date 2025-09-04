@@ -1,1 +1,8 @@
-<p>detail works!</p>
+<div class="detail" *ngIf="produit">
+  <img [src]="produit.imageUrl" alt="{{ produit.nom }}" />
+  <h2>{{ produit.nom }}</h2>
+  <p><strong>Prix :</strong> {{ produit.prix | currency:'XOF' }}</p>
+  <p><strong>Description :</strong> {{ produit.description }}</p>
+  <p><strong>Stock :</strong> {{ produit.stock }}</p>
+</div>
+

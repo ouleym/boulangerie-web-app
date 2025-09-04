@@ -7,7 +7,7 @@ import { Message } from '../../core/chat.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './messages.component.html',
-  styleUrl: './messages.component.scss'
+  styleUrls: ['./messages.component.scss'] // corrigé de styleUrl -> styleUrls
 })
 export class MessagesComponent implements OnInit {
   @Input() messages: Message[] = [];
@@ -30,7 +30,7 @@ export class MessagesComponent implements OnInit {
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffMinutes < 1) {
-      return 'À l\'instant';
+      return "À l'instant";
     } else if (diffMinutes < 60) {
       return `Il y a ${diffMinutes} min`;
     } else if (diffHours < 24) {
@@ -48,82 +48,40 @@ export class MessagesComponent implements OnInit {
   }
 
   formatMessageContent(content: string): string {
-    // Conversion basique du markdown en HTML
     let formattedContent = content;
 
-    // Remplacer les liens
     formattedContent = formattedContent.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
       '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: underline;">$1</a>'
     );
 
-    // Remplacer les blocs de code
     formattedContent = formattedContent.replace(
       /```(\w+)?\n([\s\S]*?)```/g,
       '<pre><code>$2</code></pre>'
     );
 
-    // Remplacer le code inline
-    formattedContent = formattedContent.replace(
-      /`([^`]+)`/g,
-      '<code>$1</code>'
-    );
+    formattedContent = formattedContent.replace(/`([^`]+)`/g, '<code>$1</code>');
+    formattedContent = formattedContent.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    formattedContent = formattedContent.replace(/\*([^*]+)\*/g, '<em>$1</em>');
 
-    // Remplacer le texte en gras
-    formattedContent = formattedContent.replace(
-      /\*\*([^*]+)\*\*/g,
-      '<strong>$1</strong>'
-    );
+    formattedContent = formattedContent.replace(/^\s*[-*+]\s+(.+)$/gm, '<li>$1</li>');
+    formattedContent = formattedContent.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
 
-    // Remplacer le texte en italique
-    formattedContent = formattedContent.replace(
-      /\*([^*]+)\*/g,
-      '<em>$1</em>'
-    );
-
-    // Remplacer les listes non ordonnées
-    formattedContent = formattedContent.replace(
-      /^\s*[-*+]\s+(.+)$/gm,
-      '<li>$1</li>'
-    );
-
-    // Entourer les listes de balises ul
-    formattedContent = formattedContent.replace(
-      /(<li>.*<\/li>)/gs,
-      '<ul>$1</ul>'
-    );
-
-    // Remplacer les listes ordonnées
-    formattedContent = formattedContent.replace(
-      /^\s*\d+\.\s+(.+)$/gm,
-      '<li>$1</li>'
-    );
-
-    // Entourer les listes ordonnées de balises ol
-    formattedContent = formattedContent.replace(
-      /(<li>.*<\/li>)/gs,
-      (match) => {
-        // Si ce n'est pas déjà dans une liste ul
-        if (!match.includes('<ul>')) {
-          return `<ol>${match}</ol>`;
-        }
-        return match;
+    formattedContent = formattedContent.replace(/^\s*\d+\.\s+(.+)$/gm, '<li>$1</li>');
+    formattedContent = formattedContent.replace(/(<li>.*<\/li>)/gs, (match) => {
+      if (!match.includes('<ul>')) {
+        return `<ol>${match}</ol>`;
       }
-    );
+      return match;
+    });
 
-    // Remplacer les citations
-    formattedContent = formattedContent.replace(
-      /^>\s+(.+)$/gm,
-      '<blockquote>$1</blockquote>'
-    );
+    formattedContent = formattedContent.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
 
-    // Remplacer les sauts de ligne par des paragraphes
     const paragraphs = formattedContent.split('\n\n');
     if (paragraphs.length > 1) {
       formattedContent = paragraphs
         .filter(p => p.trim())
         .map(p => {
-          // Ne pas entourer de <p> si c'est déjà un élément HTML
           if (p.trim().startsWith('<') || p.includes('<li>') || p.includes('<pre>')) {
             return p.trim();
           }
@@ -131,7 +89,6 @@ export class MessagesComponent implements OnInit {
         })
         .join('');
     } else {
-      // Remplacer les simples sauts de ligne par des <br>
       formattedContent = formattedContent.replace(/\n/g, '<br>');
     }
 
@@ -177,13 +134,10 @@ export class MessagesComponent implements OnInit {
       message.meta = {};
     }
     message.meta.liked = !message.meta.liked;
-    
-    // Ici, vous pourriez envoyer cette information au backend
     console.log(`Message ${message.id} ${message.meta.liked ? 'liké' : 'non liké'}`);
   }
 
   private showToast(message: string): void {
-    // Créer un toast simple
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = message;
@@ -204,13 +158,11 @@ export class MessagesComponent implements OnInit {
     
     document.body.appendChild(toast);
     
-    // Animation d'entrée
     setTimeout(() => {
       toast.style.opacity = '1';
       toast.style.transform = 'translateX(0)';
     }, 10);
     
-    // Suppression après 3 secondes
     setTimeout(() => {
       toast.style.opacity = '0';
       toast.style.transform = 'translateX(100%)';
