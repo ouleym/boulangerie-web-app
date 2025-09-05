@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "$schema": "https://json.schemastore.org/package.json",
   "name": "gestion-boulangerie",
   "version": "0.0.0",
@@ -62,4 +63,37 @@
     "tailwindcss": "^4.0.0",
     "vite": "^7.0.4"
   }
+=======
+    "$schema": "https://json.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@angular-devkit/build-angular": "^20.2.2",
+        "@tailwindcss/vite": "^4.0.0",
+        "@types/jwt-decode": "^2.2.1",
+        "axios": "^1.11.0",
+        "concurrently": "^9.0.1",
+        "laravel-echo": "^2.2.0",
+        "laravel-vite-plugin": "^2.0.0",
+        "pusher-js": "^8.4.0",
+        "tailwindcss": "^4.0.0",
+        "vite": "^7.0.4"
+    },
+    "dependencies": {
+        "@angular/cli": "^20.2.2",
+        "@angular/common": "^20.2.4",
+        "@angular/core": "^20.2.4",
+        "@angular/forms": "^20.2.4",
+        "@angular/router": "^20.2.4",
+        "@fortawesome/fontawesome-free": "^7.0.1",
+        "bootstrap": "^5.3.8",
+        "bootstrap-icons": "^1.13.1",
+        "jwt-decode": "^4.0.0",
+        "zone.js": "^0.15.1"
+    }
+>>>>>>> 7b71cfa (Ajout des modifications frontend)
 }
